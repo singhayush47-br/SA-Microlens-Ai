@@ -230,10 +230,29 @@ html,body{height:100%;background:var(--bg);font-family:var(--fb);color:var(--t1)
 .ds-url{font-family:var(--fn);font-size:9px;color:var(--acc);margin-top:2px;word-break:break-all}
 .ds-desc{font-size:11px;color:var(--t2);margin-top:2px;line-height:1.45}
 .ds-tag{display:inline-block;font-size:9px;padding:1px 7px;border-radius:8px;background:rgba(0,255,136,0.08);border:1px solid rgba(0,255,136,0.2);color:var(--green);margin-top:3px;font-family:var(--fn)}
-.model-url-row{background:var(--s2);border:1px solid rgba(0,212,255,0.12);border-radius:var(--rs);padding:8px 10px;margin-top:6px}
-.mu-label{font-family:var(--fn);font-size:8px;color:var(--t3);letter-spacing:0.1em;margin-bottom:4px}
-.mu-input{width:100%;background:transparent;border:none;color:var(--acc);font-family:var(--fn);font-size:10px;outline:none;letter-spacing:0.05em}
+.model-url-row{background:var(--s2);border:1px solid rgba(0,212,255,0.12);border-radius:var(--rs);padding:10px 12px;margin-top:6px}
+.mu-label{font-family:var(--fn);font-size:8px;color:var(--t3);letter-spacing:0.1em;margin-bottom:6px;display:flex;align-items:center;justify-content:space-between}
+.mu-status{font-family:var(--fn);font-size:8px;padding:2px 8px;border-radius:8px;letter-spacing:0.06em}
+.mu-status.idle{color:var(--t3);background:var(--s3)}
+.mu-status.loading{color:var(--amber);background:rgba(255,170,0,0.1);border:1px solid rgba(255,170,0,0.25);animation:blink 0.8s ease-in-out infinite}
+.mu-status.loaded{color:var(--green);background:rgba(0,255,136,0.1);border:1px solid rgba(0,255,136,0.25)}
+.mu-status.error{color:var(--red);background:rgba(255,51,85,0.1);border:1px solid rgba(255,51,85,0.25)}
+.mu-input-row{display:flex;gap:6px;align-items:center}
+.mu-input{flex:1;background:var(--s3);border:1px solid rgba(0,212,255,0.15);border-radius:4px;padding:6px 8px;color:var(--acc);font-family:var(--fn);font-size:9px;outline:none;letter-spacing:0.04em}
 .mu-input::placeholder{color:var(--t3)}
+.mu-input:focus{border-color:rgba(0,212,255,0.4)}
+.mu-load-btn{flex-shrink:0;padding:6px 10px;border-radius:4px;border:1px solid rgba(0,212,255,0.3);background:rgba(0,212,255,0.1);color:var(--acc);font-family:var(--fn);font-size:9px;font-weight:700;letter-spacing:0.08em;cursor:pointer;white-space:nowrap;transition:all 0.15s}
+.mu-load-btn:hover{background:rgba(0,212,255,0.2)}
+.mu-pred-box{display:none;margin-top:8px;background:var(--s3);border-radius:4px;padding:8px 10px}
+.mu-pred-box.show{display:block}
+.mu-pred-title{font-family:var(--fn);font-size:8px;color:var(--t3);letter-spacing:0.1em;margin-bottom:5px}
+.mu-pred-row{display:flex;align-items:center;gap:8px;margin-bottom:4px}
+.mu-pred-name{font-size:10px;color:var(--t1);flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mu-pred-bar{width:60px;height:3px;background:var(--s2);border-radius:2px;overflow:hidden;flex-shrink:0}
+.mu-pred-fill{height:100%;border-radius:2px;background:var(--acc)}
+.mu-pred-pct{font-family:var(--fn);font-size:9px;color:var(--acc);width:32px;text-align:right;flex-shrink:0}
+.mu-err-msg{font-size:10px;color:var(--red);margin-top:6px;line-height:1.5}
+.mu-class-hint{font-size:10px;color:var(--amber);margin-top:6px;line-height:1.5;padding:6px 8px;background:rgba(255,170,0,0.06);border-radius:4px;border:1px solid rgba(255,170,0,0.15)}
 
 /* ── ABOUT SCREEN ── */
 #scr-about{padding:12px;gap:10px;padding-bottom:max(16px,env(safe-area-inset-bottom))}
@@ -577,14 +596,8 @@ html,body{height:100%;background:var(--bg);font-family:var(--fb);color:var(--t1)
       </div>
 
       <div style="display:flex;flex-direction:column;gap:8px">
-        <div class="model-url-row"><div class="mu-label">💧 WATER MODEL URL</div><input class="mu-input" id="mu-water" placeholder="https://teachablemachine.withgoogle.com/models/XXXXX/" oninput="saveModelUrl('water',this.value)"/></div>
-        <div class="model-url-row"><div class="mu-label">🩸 BLOOD MODEL URL</div><input class="mu-input" id="mu-blood" placeholder="https://teachablemachine.withgoogle.com/models/XXXXX/" oninput="saveModelUrl('blood',this.value)"/></div>
-        <div class="model-url-row"><div class="mu-label">🦠 VIRUS MODEL URL</div><input class="mu-input" id="mu-virus" placeholder="https://teachablemachine.withgoogle.com/models/XXXXX/" oninput="saveModelUrl('virus',this.value)"/></div>
-        <div class="model-url-row"><div class="mu-label">🔬 AMOEBA MODEL URL</div><input class="mu-input" id="mu-amoeba" placeholder="https://teachablemachine.withgoogle.com/models/XXXXX/" oninput="saveModelUrl('amoeba',this.value)"/></div>
-        <div class="model-url-row"><div class="mu-label">🍄 FUNGUS MODEL URL</div><input class="mu-input" id="mu-fungus" placeholder="https://teachablemachine.withgoogle.com/models/XXXXX/" oninput="saveModelUrl('fungus',this.value)"/></div>
-        <div class="model-url-row"><div class="mu-label">⚗️ BACTERIA MODEL URL</div><input class="mu-input" id="mu-bacteria" placeholder="https://teachablemachine.withgoogle.com/models/XXXXX/" oninput="saveModelUrl('bacteria',this.value)"/></div>
-        <div class="model-url-row"><div class="mu-label">🧬 CANCER MODEL URL</div><input class="mu-input" id="mu-cancerous" placeholder="https://teachablemachine.withgoogle.com/models/XXXXX/" oninput="saveModelUrl('cancerous',this.value)"/></div>
-        <div class="model-url-row"><div class="mu-label">🌿 ALGAE MODEL URL</div><input class="mu-input" id="mu-algae" placeholder="https://teachablemachine.withgoogle.com/models/XXXXX/" oninput="saveModelUrl('algae',this.value)"/></div>
+        <!-- ── MODEL URL ROWS (fixed — use LOAD button, not oninput) ── -->
+        <div id="allModelRows"><!-- built by JS --></div>
       </div>
 
     </div><!-- /scr-train -->
@@ -888,14 +901,24 @@ resizeCanvas();
 
 /* ═══════════════════ LOAD TF MODEL ═══════════════════ */
 async function loadModel(key){
+  // Check cache first — no need to reload if already in memory
+  if(modelCache[key]){loadedModel=modelCache[key];document.getElementById('hudStatus').textContent='MODEL OK';document.getElementById('hudStatus').className='hp grn';return;}
   const url=CFG_MODELS[key];
-  if(!url||typeof tmImage==='undefined')return;
+  if(!url)return;
+  if(typeof tmImage==='undefined'){console.warn('tmImage not loaded yet');return;}
+  document.getElementById('hudStatus').textContent='LOADING AI...';
+  document.getElementById('hudStatus').className='hp';
   try{
-    document.getElementById('hudStatus').textContent='LOADING AI...';
-    loadedModel=await tmImage.load(url+'model.json',url+'metadata.json');
+    const model=await tmImage.load(url+'model.json',url+'metadata.json');
+    modelCache[key]=model;loadedModel=model;
     document.getElementById('hudStatus').textContent='MODEL OK';
     document.getElementById('hudStatus').className='hp grn';
-  }catch(e){loadedModel=null;console.warn('Model load failed:',e);}
+  }catch(e){
+    loadedModel=null;
+    document.getElementById('hudStatus').textContent='MODEL ERR';
+    document.getElementById('hudStatus').className='hp red';
+    console.warn('Model load failed:',e);
+  }
 }
 
 /* ═══════════════════ RUN SCAN ═══════════════════ */
@@ -926,19 +949,23 @@ async function runScan(){
   }
 
   const pool=DB[cur].orgs;
-  const count=Math.min(pool.length,2+Math.floor(Math.random()*(pool.length-1)));
   let picked;
 
   if(predictions&&predictions.length>0){
-    // Use real model results to weight which organisms to pick
-    const sorted=[...pool].sort((a,b)=>{
-      // match model class names roughly
-      const pa=predictions.find(p=>p.className&&(p.className.toLowerCase().includes(a.n.split(' ')[0].toLowerCase())||a.type.toLowerCase().includes(p.className.toLowerCase())));
-      const pb=predictions.find(p=>p.className&&(p.className.toLowerCase().includes(b.n.split(' ')[0].toLowerCase())||b.type.toLowerCase().includes(p.className.toLowerCase())));
-      return (pb?pb.probability:0)-(pa?pa.probability:0);
+    // Sort by probability descending — highest confidence class shown first
+    const sorted=[...predictions].sort((a,b)=>b.probability-a.probability);
+    picked=[];
+    sorted.forEach((pred,idx)=>{
+      if(idx<pool.length&&pred.probability>=0.05){
+        const org={...pool[idx]};
+        org._aiClass=pred.className;
+        org.conf=Math.round(pred.probability*100);
+        picked.push(org);
+      }
     });
-    picked=sorted.slice(0,count);
+    if(!picked.length) picked=[{...pool[0],conf:Math.round(sorted[0].probability*100),_aiClass:sorted[0].className}];
   } else {
+    const count=Math.min(pool.length,2+Math.floor(Math.random()*(pool.length-1)));
     picked=[...pool].sort(()=>Math.random()-0.5).slice(0,count);
   }
 
@@ -1002,12 +1029,13 @@ function addCard(org,conf,idx){
   const dc=document.createElement('div');
   dc.className='dc '+cls;
   dc.style.animationDelay=(idx*0.06)+'s';
+  const typeLabel=org._aiClass?`AI CLASS: ${org._aiClass}`:org.type;
   dc.innerHTML=`
     <div class="dc-top">
       <div class="dc-name">${org.n}</div>
       <div class="dc-badge ${cls}">${lbl}</div>
     </div>
-    <div class="dc-type">${org.type}</div>
+    <div class="dc-type">${typeLabel}</div>
     <div class="dc-desc">${org.d}</div>
     <div class="dc-conf">
       <div class="cbar"><div class="cfill ${cls}" style="width:0" data-w="${Math.round(conf)}%"></div></div>
@@ -1151,18 +1179,143 @@ function renderHistory(){
 }
 
 /* ═══════════════════ TRAIN SCREEN — MODEL URLS ═══════════════════ */
+/* ═══════ MODEL CACHE — keeps loaded models in memory between tab switches ═══════ */
+const modelCache={};
+
+/* ═══════ SAMPLE META for Train tab ═══════ */
+const SAMPLE_META={
+  water:{em:'💧',label:'Water',hint:'Class names you used in Teachable Machine must match exactly what you typed there. Common names: "Algae", "Bacteria", "Chemical", "Safe", "Microplastic"'},
+  blood:{em:'🩸',label:'Blood',hint:'Typical class names: "Normal RBC", "Sickle Cell", "Leukemia", "Cancer Cell", "Platelet". Must match EXACTLY what you named them in Teachable Machine.'},
+  virus:{em:'🦠',label:'Virus',hint:'Typical class names: "Coronavirus", "Influenza", "Ebola", "HIV", "Safe". Must match EXACTLY what you named them in Teachable Machine.'},
+  amoeba:{em:'🔬',label:'Amoeba',hint:'Typical class names: "Naegleria", "Entamoeba", "Acanthamoeba", "Giardia", "Safe". Must match EXACTLY.'},
+  fungus:{em:'🍄',label:'Fungus',hint:'Typical class names: "Aspergillus", "Candida", "Cryptococcus", "Safe". Must match EXACTLY.'},
+  bacteria:{em:'⚗️',label:'Bacteria',hint:'Typical class names: "TB Bacteria", "Staph", "E coli", "Safe". Must match EXACTLY.'},
+  cancerous:{em:'🧬',label:'Cancer',hint:'Typical class names: "Cancer Cell", "Leukemia", "Normal Cell". Must match EXACTLY.'},
+  algae:{em:'🌿',label:'Algae',hint:'Typical class names: "Toxic Algae", "Safe Algae", "Diatom". Must match EXACTLY.'},
+};
+
+/* ═══════ BUILD TRAIN TAB ROWS ═══════ */
+function buildModelRows(){
+  const el=document.getElementById('allModelRows');
+  if(!el)return;
+  el.innerHTML=Object.keys(SAMPLE_META).map(key=>{
+    const m=SAMPLE_META[key];
+    const saved=CFG_MODELS[key]||'';
+    return`<div class="model-url-row" id="mrow-${key}">
+      <div class="mu-label">
+        <span>${m.em} ${m.label.toUpperCase()} MODEL URL</span>
+        <span class="mu-status idle" id="mstatus-${key}">IDLE</span>
+      </div>
+      <div class="mu-input-row">
+        <input class="mu-input" id="mu-${key}" value="${saved}" placeholder="https://teachablemachine.withgoogle.com/models/XXXXX/"/>
+        <button class="mu-load-btn" onclick="loadAndTest('${key}')">LOAD &amp; TEST</button>
+      </div>
+      <div class="mu-class-hint" id="mhint-${key}" style="display:none">${m.hint}</div>
+      <div class="mu-err-msg" id="merr-${key}" style="display:none"></div>
+      <div class="mu-pred-box" id="mpred-${key}">
+        <div class="mu-pred-title">LIVE PREDICTIONS FROM YOUR MODEL</div>
+        <div id="mpred-rows-${key}"></div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+/* ═══════ LOAD + TEST a model ═══════ */
+async function loadAndTest(key){
+  const inputEl=document.getElementById('mu-'+key);
+  const statusEl=document.getElementById('mstatus-'+key);
+  const errEl=document.getElementById('merr-'+key);
+  const predBox=document.getElementById('mpred-'+key);
+  const hintEl=document.getElementById('mhint-'+key);
+  const predRows=document.getElementById('mpred-rows-'+key);
+
+  let url=(inputEl.value||'').trim();
+  if(!url){errEl.textContent='Please paste your Teachable Machine model URL first.';errEl.style.display='block';return;}
+
+  // Fix 1: auto-add trailing slash
+  if(!url.endsWith('/'))url+='/';
+  inputEl.value=url;
+
+  // Save URL
+  CFG_MODELS[key]=url;
+  try{localStorage.setItem('sa_models',JSON.stringify(CFG_MODELS));}catch(e){}
+
+  // Clear old state
+  errEl.style.display='none';predBox.classList.remove('show');hintEl.style.display='none';
+  statusEl.className='mu-status loading';statusEl.textContent='LOADING...';
+
+  if(typeof tmImage==='undefined'){
+    statusEl.className='mu-status error';statusEl.textContent='ERROR';
+    errEl.textContent='TensorFlow.js library not loaded. Check your internet connection and reload the app.';
+    errEl.style.display='block';return;
+  }
+
+  try{
+    const model=await tmImage.load(url+'model.json',url+'metadata.json');
+    modelCache[key]=model;
+    // If this is the current sample, also set as active model
+    if(key===cur)loadedModel=model;
+
+    statusEl.className='mu-status loaded';statusEl.textContent='LOADED ✓';
+
+    // Test prediction with a blank canvas to show class names
+    const testCanvas=document.createElement('canvas');
+    testCanvas.width=224;testCanvas.height=224;
+    const preds=await model.predict(testCanvas);
+
+    // Show raw predictions
+    predBox.classList.add('show');
+    predRows.innerHTML=preds.map(p=>{
+      const pct=Math.round(p.probability*100);
+      return`<div class="mu-pred-row">
+        <div class="mu-pred-name">${p.className}</div>
+        <div class="mu-pred-bar"><div class="mu-pred-fill" style="width:${pct}%"></div></div>
+        <div class="mu-pred-pct">${pct}%</div>
+      </div>`;
+    }).join('');
+
+    hintEl.style.display='block';
+    errEl.style.display='none';
+
+    // Update nav status
+    if(key===cur){
+      document.getElementById('hudStatus').textContent='MODEL OK';
+      document.getElementById('hudStatus').className='hp grn';
+    }
+
+  }catch(e){
+    statusEl.className='mu-status error';statusEl.textContent='ERROR';
+    let msg=e.message||String(e);
+    if(msg.includes('404')||msg.includes('not found')){
+      msg='Model files not found. Make sure you clicked "Upload" in Teachable Machine (not just Export). The URL must end with a slash: /models/XXXXX/';
+    } else if(msg.includes('CORS')||msg.includes('fetch')){
+      msg='Network error loading model. Make sure your Teachable Machine model is set to PUBLIC (not private) when you upload it.';
+    } else if(msg.includes('JSON')){
+      msg='Could not read model.json. The URL may be wrong or the model upload failed. Try re-uploading in Teachable Machine.';
+    }
+    errEl.textContent='Error: '+msg;errEl.style.display='block';
+    modelCache[key]=null;
+    if(key===cur)loadedModel=null;
+  }
+}
+
+/* ═══════ FIXED loadSavedModelUrls — also restore modelCache ═══════ */
 function loadSavedModelUrls(){
+  buildModelRows();
+  // Update status badges for already-loaded models
   Object.keys(CFG_MODELS).forEach(key=>{
-    const el=document.getElementById('mu-'+key);
-    if(el)el.value=CFG_MODELS[key]||'';
+    const statusEl=document.getElementById('mstatus-'+key);
+    if(statusEl){
+      if(modelCache[key]){statusEl.className='mu-status loaded';statusEl.textContent='LOADED ✓';}
+      else if(CFG_MODELS[key]){statusEl.className='mu-status idle';statusEl.textContent='URL SAVED';}
+    }
   });
 }
 
+/* ═══════ FIXED saveModelUrl — removed oninput, now only called by LOAD button ═══════ */
 function saveModelUrl(key,url){
   CFG_MODELS[key]=url.trim();
   try{localStorage.setItem('sa_models',JSON.stringify(CFG_MODELS));}catch(e){}
-  // Reload model if this is the current sample
-  if(key===cur&&url.trim()){loadModel(key);}
 }
 
 /* ═══════════════════ DATASET TOGGLES ═══════════════════ */
@@ -1176,6 +1329,10 @@ function toggleDs(header){
 /* ═══════════════════ INIT ═══════════════════ */
 buildActionBar();
 setMode('camera');
+// Build model rows in train tab immediately
+buildModelRows();
+// Auto-load any saved model for current sample
+if(CFG_MODELS[cur])loadModel(cur);
 if('serviceWorker'in navigator){
   window.addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}));
 }
