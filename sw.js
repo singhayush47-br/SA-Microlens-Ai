@@ -1,5 +1,5 @@
 /* SA-Microlens AI — Service Worker v4 (bumped to force PWA refresh) */
-const CACHE='sa-microlens-v6';
+const CACHE='sa-microlens-v7';
 const ASSETS=['./','./index.html','./manifest.json'];
 self.addEventListener('install',e=>{
   e.waitUntil(caches.open(CACHE).then(c=>c.addAll(ASSETS)).then(()=>self.skipWaiting()));
