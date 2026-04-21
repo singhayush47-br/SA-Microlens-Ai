@@ -633,7 +633,7 @@ html,body{height:100%;background:var(--bg);font-family:var(--fb);color:var(--t1)
 
 <script>
 /* ═══════════════════ CONFIG ═══════════════════ */
-let CFG_MODELS={water:'',blood:'',virus:'',amoeba:'',fungus:'',bacteria:'',cancerous:'',algae:''};
+let CFG_MODELS={water:'',blood:'https://teachablemachine.withgoogle.com/models/GTkNhS-Rel/',
 try{const s=localStorage.getItem('sa_models');if(s)CFG_MODELS=JSON.parse(s);}catch(e){}
 let CFG_GEMINI='';
 try{CFG_GEMINI=localStorage.getItem('sa_gemini_key')||'';}catch(e){}
@@ -649,13 +649,12 @@ const DB={
     {n:'Spirogyra filament',type:'ALGAE',d:'Spiral chloroplast alga · Freshwater · No pathogenic risk',t:'safe'},
   ]},
   blood:{hud:'BLOOD',station:'STA-B2',orgs:[
-    {n:'Leukemic blast cell',type:'CANCER·BLOOD',d:'Acute leukaemia marker · Abnormal nuclear morphology · Urgent referral',t:'critical'},
-    {n:'Metastatic cancer cell',type:'CANCER',d:'Tumour-origin fragment · Stage III indicator · Multi-organ risk',t:'critical'},
-    {n:'Sickle cell (HbS)',type:'RBC·GENETIC',d:'Haemoglobin S mutation · Crescent morphology · Vaso-occlusion risk',t:'high'},
-    {n:'Anisocytosis (RBC)',type:'RBC·ANOMALY',d:'Irregular RBC sizing · Iron-deficiency anaemia indicator',t:'med'},
-    {n:'Platelet microclump',type:'PLATELET',d:'Aggregation disorder · Thrombocytopenia risk factor',t:'med'},
-    {n:'Normal erythrocyte',type:'RBC·NORMAL',d:'Healthy biconcave RBC · No pathological features detected',t:'safe'},
-  ]},
+       {n:'Leukemia Cell',type:'CANCER·BLOOD',d:'Acute leukaemia marker · Abnormal nuclear morphology · Urgent referral required',t:'critical'},
+       {n:'Cancer Cell',type:'CANCER',d:'Malignant cell detected · Abnormal mitosis · Multi-organ risk indicator',t:'critical'},
+       {n:'Sickle Cell',type:'RBC·GENETIC',d:'Haemoglobin S mutation · Crescent morphology · Vaso-occlusion risk',t:'high'},
+       {n:'WBC Normal',type:'WBC·NORMAL',d:'Healthy white blood cell · Round nucleus · Immune system functioning normally',t:'safe'},
+       {n:'Normal RBC',type:'RBC·NORMAL',d:'Healthy biconcave erythrocyte · No pathological features detected',t:'safe'},
+   ]},
   virus:{hud:'VIRUS',station:'STA-V3',orgs:[
     {n:'SARS-CoV-2 (Omicron BA.5)',type:'CORONAVIRUS',d:'Betacoronavirus · Spike S614G mutation · Pandemic strain',t:'critical'},
     {n:'Influenza A H5N1',type:'ORTHOMYXOVIRUS',d:'Avian influenza · Haemagglutinin H5 · High pandemic potential',t:'critical'},
@@ -1185,7 +1184,7 @@ const modelCache={};
 /* ═══════ SAMPLE META for Train tab ═══════ */
 const SAMPLE_META={
   water:{em:'💧',label:'Water',hint:'Class names you used in Teachable Machine must match exactly what you typed there. Common names: "Algae", "Bacteria", "Chemical", "Safe", "Microplastic"'},
-  blood:{em:'🩸',label:'Blood',hint:'Typical class names: "Normal RBC", "Sickle Cell", "Leukemia", "Cancer Cell", "Platelet". Must match EXACTLY what you named them in Teachable Machine.'},
+  blood:{em:'🩸',label:'Blood',hint:'Your 5 trained classes: "Normal RBC", "WBC Normal", "Sickle Cell", "Leukemia Cell", "Cancer Cell" — these must match EXACTLY what you named them in Teachable Machine.'},
   virus:{em:'🦠',label:'Virus',hint:'Typical class names: "Coronavirus", "Influenza", "Ebola", "HIV", "Safe". Must match EXACTLY what you named them in Teachable Machine.'},
   amoeba:{em:'🔬',label:'Amoeba',hint:'Typical class names: "Naegleria", "Entamoeba", "Acanthamoeba", "Giardia", "Safe". Must match EXACTLY.'},
   fungus:{em:'🍄',label:'Fungus',hint:'Typical class names: "Aspergillus", "Candida", "Cryptococcus", "Safe". Must match EXACTLY.'},
