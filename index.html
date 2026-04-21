@@ -633,7 +633,7 @@ html,body{height:100%;background:var(--bg);font-family:var(--fb);color:var(--t1)
 
 <script>
 /* ═══════════════════ CONFIG ═══════════════════ */
-let CFG_MODELS={water:'',blood:'https://teachablemachine.withgoogle.com/models/GTkNhS-Rel/',
+let CFG_MODELS={water:'',blood:'https://teachablemachine.withgoogle.com/models/GTkNhS-Rel/',virus:'',amoeba:'',fungus:'',bacteria:'',cancerous:'',algae:''};
 try{const s=localStorage.getItem('sa_models');if(s)CFG_MODELS=JSON.parse(s);}catch(e){}
 let CFG_GEMINI='';
 try{CFG_GEMINI=localStorage.getItem('sa_gemini_key')||'';}catch(e){}
