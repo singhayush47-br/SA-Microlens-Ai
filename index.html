@@ -8,6 +8,8 @@
 <meta name="apple-mobile-web-app-capable" content="yes"/>
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
 <meta name="apple-mobile-web-app-title" content="SA-Microlens AI"/>
+<!-- CRITICAL for Android WebView/APK camera + file access -->
+<meta http-equiv="Permissions-Policy" content="camera=*, microphone=*"/>
 <title>SA-Microlens AI</title>
 <link rel="manifest" href="manifest.json"/>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
@@ -77,7 +79,7 @@ html,body{height:100%;background:var(--bg);font-family:var(--fb);color:var(--t1)
 .mode-btn.active{color:var(--acc);border-bottom-color:var(--acc);background:rgba(0,212,255,0.05)}
 .mode-icon{font-size:14px}
 
-/* ── VIEWER (camera / uploaded image) ── */
+/* ── VIEWER ── */
 .viewer{position:relative;width:100%;flex-shrink:0;background:#000;overflow:hidden}
 #liveVideo{width:100%;height:100%;object-fit:cover;display:none}
 #uploadedImg{width:100%;height:100%;object-fit:contain;display:none;background:#000}
@@ -106,7 +108,7 @@ html,body{height:100%;background:var(--bg);font-family:var(--fb);color:var(--t1)
 
 /* ── ACTION BUTTONS BAR ── */
 .action-bar{display:flex;gap:7px;padding:9px 12px;background:var(--s1);border-top:1px solid rgba(0,212,255,0.08);flex-shrink:0}
-.abtn{flex:1;display:flex;align-items:center;justify-content:center;gap:5px;padding:9px 6px;border-radius:var(--rs);border:1px solid;font-family:var(--fn);font-size:9px;font-weight:700;letter-spacing:0.1em;cursor:pointer;transition:all 0.15s}
+.abtn{flex:1;display:flex;align-items:center;justify-content:center;gap:5px;padding:9px 6px;border-radius:var(--rs);border:1px solid;font-family:var(--fn);font-size:9px;font-weight:700;letter-spacing:0.1em;cursor:pointer;transition:all 0.15s;-webkit-appearance:none;appearance:none}
 .abtn:active{transform:scale(0.97)}
 .abtn-cam{background:rgba(0,212,255,0.08);border-color:rgba(0,212,255,0.3);color:var(--acc)}
 .abtn-cam.stop{background:rgba(255,51,85,0.1);border-color:rgba(255,51,85,0.35);color:var(--red)}
@@ -117,7 +119,6 @@ html,body{height:100%;background:var(--bg);font-family:var(--fb);color:var(--t1)
 .abtn-scan.scanning{border-color:var(--acc3);color:var(--acc3);animation:scanPulse 0.85s ease-in-out infinite}
 @keyframes scanPulse{0%,100%{background:rgba(0,255,204,0.08)}50%{background:rgba(0,255,204,0.22)}}
 .abtn-icon{font-size:14px}
-#fileInput{display:none}
 
 /* zoom strip */
 .zoom-strip{display:flex;align-items:center;gap:5px;padding:5px 12px;background:var(--s1);border-top:1px solid rgba(0,212,255,0.06);flex-shrink:0}
@@ -126,7 +127,7 @@ html,body{height:100%;background:var(--bg);font-family:var(--fb);color:var(--t1)
 .zmag.active{border-color:var(--acc);color:var(--acc);background:rgba(0,212,255,0.08)}
 
 /* ── RESULTS PANEL ── */
-.rpanel{flex:1;overflow-y:auto;background:var(--bg);scrollbar-width:thin;scrollbar-color:var(--s3) transparent}
+.rpanel{flex:1;overflow-y:auto;background:var(--bg);scrollbar-width:thin;scrollbar-color:var(--s3) transparent;-webkit-overflow-scrolling:touch}
 .rinner{padding:10px 12px;display:flex;flex-direction:column;gap:10px;padding-bottom:max(16px,env(safe-area-inset-bottom))}
 
 /* metrics */
@@ -171,7 +172,7 @@ html,body{height:100%;background:var(--bg);font-family:var(--fb);color:var(--t1)
 .empty-em{font-size:34px;margin-bottom:10px;opacity:0.28}
 .empty-tx{font-size:12px;line-height:1.65}
 
-/* image source badge on result */
+/* image source badge */
 .src-badge{display:inline-flex;align-items:center;gap:5px;font-family:var(--fn);font-size:9px;padding:3px 10px;border-radius:4px;background:var(--s2);border:1px solid rgba(0,212,255,0.15);color:var(--t2);letter-spacing:0.06em;margin-bottom:6px}
 
 /* gemini */
@@ -200,7 +201,6 @@ html,body{height:100%;background:var(--bg);font-family:var(--fb);color:var(--t1)
 .hc-meta{font-family:var(--fn);font-size:9px;color:var(--t3);margin-top:3px;letter-spacing:0.05em}
 .hc-src{font-family:var(--fn);font-size:8px;color:var(--t3);margin-top:2px}
 .hc-r{font-family:var(--fn);font-size:9px;padding:3px 9px;border-radius:10px;white-space:nowrap;flex-shrink:0}
-.hc-thumb{width:44px;height:44px;border-radius:6px;object-fit:cover;border:1px solid rgba(0,212,255,0.15);flex-shrink:0;display:none}
 
 /* ── TRAIN SCREEN ── */
 #scr-train{padding:12px;gap:10px;padding-bottom:max(16px,env(safe-area-inset-bottom))}
@@ -274,6 +274,9 @@ html,body{height:100%;background:var(--bg);font-family:var(--fb);color:var(--t1)
 .bnav-lb{font-family:var(--fn);font-size:8px;color:var(--t3);letter-spacing:0.06em}
 .bnav.active .bnav-ic{transform:scale(1.15)}
 .bnav.active .bnav-lb{color:var(--acc)}
+
+/* ── HIDDEN FILE INPUTS — critical for mobile ── */
+#fileUpload,#fileCapture{position:fixed;top:-9999px;left:-9999px;width:1px;height:1px;opacity:0}
 </style>
 </head>
 <body>
@@ -282,7 +285,7 @@ html,body{height:100%;background:var(--bg);font-family:var(--fb);color:var(--t1)
 <div id="splash">
   <div class="sp-ring"><span style="font-size:36px">🔬</span></div>
   <div class="sp-sa">SA-Microlens</div>
-  <div class="sp-sub">MICROLENS AI · v3.0</div>
+  <div class="sp-sub">MICROLENS AI · v3.1</div>
   <div class="sp-tag">SMART PATHOGEN DETECTION SYSTEM</div>
   <div class="sp-bar"><div class="sp-fill"></div></div>
 </div>
@@ -323,13 +326,13 @@ html,body{height:100%;background:var(--bg);font-family:var(--fb);color:var(--t1)
       <!-- INPUT MODE TOGGLE -->
       <div class="mode-bar">
         <button class="mode-btn active" id="modeCamera" onclick="setMode('camera')">
-          <span class="mode-icon">📷</span>LIVE CAMERA
+          <span class="mode-icon">📷</span>LIVE CAM
         </button>
         <button class="mode-btn" id="modeUpload" onclick="setMode('upload')">
-          <span class="mode-icon">🖼️</span>UPLOAD IMAGE
+          <span class="mode-icon">🖼️</span>UPLOAD
         </button>
         <button class="mode-btn" id="modeCapture" onclick="setMode('capture')">
-          <span class="mode-icon">📸</span>TAKE PHOTO
+          <span class="mode-icon">📸</span>PHOTO
         </button>
       </div>
 
@@ -356,14 +359,12 @@ html,body{height:100%;background:var(--bg);font-family:var(--fb);color:var(--t1)
         </div>
         <div class="viewer-placeholder" id="viewerPlaceholder">
           <div class="vp-icon" id="vpIcon">📷</div>
-          <div class="vp-txt" id="vpTxt">Start Camera to see live microscope feed, or Upload an image to analyse</div>
+          <div class="vp-txt" id="vpTxt">Start Camera to see live feed, or Upload an image to analyse</div>
         </div>
       </div>
 
       <!-- ACTION BUTTONS -->
-      <div class="action-bar" id="actionBar">
-        <!-- dynamically built per mode -->
-      </div>
+      <div class="action-bar" id="actionBar"></div>
 
       <!-- ZOOM STRIP -->
       <div class="zoom-strip">
@@ -374,7 +375,7 @@ html,body{height:100%;background:var(--bg);font-family:var(--fb);color:var(--t1)
         <div class="zmag" onclick="setMag(this,'1000x')">1000x</div>
       </div>
 
-      <!-- hidden file inputs -->
+      <!-- HIDDEN FILE INPUTS — placed outside action bar to avoid APK rendering issues -->
       <input type="file" id="fileUpload" accept="image/*" onchange="handleFileUpload(event)"/>
       <input type="file" id="fileCapture" accept="image/*" capture="environment" onchange="handleFileCapture(event)"/>
 
@@ -382,33 +383,25 @@ html,body{height:100%;background:var(--bg);font-family:var(--fb);color:var(--t1)
       <div class="rpanel">
         <div class="rinner">
           <div id="srcBadgeWrap"></div>
-
-          <!-- metrics -->
           <div class="mstrip">
             <div class="mc"><div class="mc-v" id="mDet">0</div><div class="mc-l">Detected</div></div>
             <div class="mc"><div class="mc-v" id="mConf">—</div><div class="mc-l">Confidence</div></div>
             <div class="mc"><div class="mc-v" id="mRisk">0</div><div class="mc-l">Risk /10</div></div>
             <div class="mc"><div class="mc-v" id="mMs">—</div><div class="mc-l">Scan ms</div></div>
           </div>
-
-          <!-- threat -->
           <div class="threat t-low" id="threatEl">
             <div class="tdot"></div>
             <div class="ttxt" id="threatTxt">Ready — select a mode and scan a sample</div>
           </div>
-
-          <!-- detections -->
           <div>
             <div class="slbl">Detection results</div>
             <div class="dlist" id="detList">
               <div class="empty">
                 <div class="empty-em">🔎</div>
-                <div class="empty-tx">Use Camera, Upload an image, or Take a photo<br/>then tap SCAN to detect pathogens</div>
+                <div class="empty-tx">Use Camera, Upload an image, or Take a photo — then tap SCAN</div>
               </div>
             </div>
           </div>
-
-          <!-- gemini -->
           <div class="gem">
             <div class="gem-hd">
               <div class="gem-ico">G</div>
@@ -418,23 +411,22 @@ html,body{height:100%;background:var(--bg);font-family:var(--fb);color:var(--t1)
               </div>
             </div>
             <div class="gem-body">
-              <div class="gem-out" id="gemOut">Scan a sample first, then tap ANALYZE for clinical interpretation and lab action plan.</div>
+              <div class="gem-out" id="gemOut">Scan a sample first, then tap ANALYZE for clinical interpretation.</div>
             </div>
             <div class="gem-ft">
               <input class="gem-in" id="gemKey" type="password" placeholder="Paste Gemini API key — aistudio.google.com"/>
               <button class="gem-btn" onclick="askGemini()">ANALYZE</button>
             </div>
           </div>
-
         </div>
       </div>
-    </div><!-- /scr-scan -->
+    </div>
 
     <!-- ══ HISTORY SCREEN ══ -->
     <div class="screen" id="scr-history">
       <div class="slbl" style="padding:12px 12px 0">Scan history</div>
       <div id="histList" style="padding:8px 12px;display:flex;flex-direction:column;gap:8px;padding-bottom:max(16px,env(safe-area-inset-bottom))">
-        <div class="empty"><div class="empty-em">📋</div><div class="empty-tx">No scans yet. Run a scan to build history.</div></div>
+        <div class="empty"><div class="empty-em">📋</div><div class="empty-tx">No scans yet.</div></div>
       </div>
     </div>
 
@@ -445,181 +437,67 @@ html,body{height:100%;background:var(--bg);font-family:var(--fb);color:var(--t1)
         <div class="th-title">HOW TO TRAIN YOUR AI MODEL</div>
         <div class="th-sub">Train a free Teachable Machine model on real microscopy images and plug it into SA-Microlens AI</div>
       </div>
-
-      <!-- STEP 1 -->
       <div class="step-card">
         <div class="step-num">1</div>
         <div class="step-label">STEP 01</div>
         <div class="step-title">Get real microscopy images (free)</div>
-        <div class="step-body">Download labeled microscopy images from the free dataset sources listed below. Aim for 60–100 images per category. The more images you add, the more accurate your model will be.</div>
+        <div class="step-body">Download labeled microscopy images from Kaggle, Roboflow, NIH, or CDC. Aim for 60–100 images per class. More images = higher accuracy.</div>
       </div>
-
-      <!-- DATASET SOURCES per sample type -->
       <div class="slbl">Free image datasets — tap to expand</div>
-
       <div class="sample-ds-card">
-        <div class="sds-header" onclick="toggleDs(this)">
-          <div class="sds-em">💧</div>
-          <div class="sds-name">Water Sample</div>
-          <div class="sds-count">4 sources</div>
-          <div class="sds-toggle">▼</div>
-        </div>
+        <div class="sds-header" onclick="toggleDs(this)"><div class="sds-em">💧</div><div class="sds-name">Water Sample</div><div class="sds-count">4 sources</div><div class="sds-toggle">▼</div></div>
         <div class="sds-body">
-          <div class="ds-row"><div class="ds-dot"></div><div class="ds-info"><div class="ds-site">Kaggle — Water Quality Dataset</div><div class="ds-url">kaggle.com/datasets/mssmartypants/water-quality</div><div class="ds-desc">Labeled images of algae, bacteria, turbidity, heavy metals in water samples.</div><div class="ds-tag">FREE DOWNLOAD</div></div></div>
-          <div class="ds-row"><div class="ds-dot"></div><div class="ds-info"><div class="ds-site">Roboflow Universe — Water Microscopy</div><div class="ds-url">universe.roboflow.com → search "water microscopy"</div><div class="ds-desc">Pre-labeled microscopy images of water microorganisms. Download as image folder.</div><div class="ds-tag">FREE DOWNLOAD</div></div></div>
-          <div class="ds-row"><div class="ds-dot"></div><div class="ds-info"><div class="ds-site">USGS Algae Image Library</div><div class="ds-url">nas.er.usgs.gov/taxgroup/algae</div><div class="ds-desc">Official USGS algae microscopy images — hundreds of species with labels.</div><div class="ds-tag">PUBLIC DOMAIN</div></div></div>
-          <div class="ds-row"><div class="ds-dot"></div><div class="ds-info"><div class="ds-site">NIH Image Gallery — Water Pathogens</div><div class="ds-url">images.nigms.nih.gov</div><div class="ds-desc">Search "Giardia", "E. coli", "Cryptosporidium" — official microscopy images, royalty-free.</div><div class="ds-tag">FREE · ROYALTY FREE</div></div></div>
+          <div class="ds-row"><div class="ds-dot"></div><div class="ds-info"><div class="ds-site">Kaggle — Water Quality Dataset</div><div class="ds-url">kaggle.com/datasets/mssmartypants/water-quality</div><div class="ds-desc">Labeled images of algae, bacteria, turbidity in water samples.</div><div class="ds-tag">FREE DOWNLOAD</div></div></div>
+          <div class="ds-row"><div class="ds-dot"></div><div class="ds-info"><div class="ds-site">Roboflow Universe — Water Microscopy</div><div class="ds-url">universe.roboflow.com → search "water microscopy"</div><div class="ds-desc">Pre-labeled microscopy images of water microorganisms.</div><div class="ds-tag">FREE DOWNLOAD</div></div></div>
+          <div class="ds-row"><div class="ds-dot"></div><div class="ds-info"><div class="ds-site">USGS Algae Image Library</div><div class="ds-url">nas.er.usgs.gov/taxgroup/algae</div><div class="ds-desc">Official USGS algae microscopy images — hundreds of species.</div><div class="ds-tag">PUBLIC DOMAIN</div></div></div>
+          <div class="ds-row"><div class="ds-dot"></div><div class="ds-info"><div class="ds-site">NIH Image Gallery</div><div class="ds-url">images.nigms.nih.gov</div><div class="ds-desc">Search "Giardia", "E. coli", "Cryptosporidium" — royalty-free.</div><div class="ds-tag">FREE · ROYALTY FREE</div></div></div>
         </div>
       </div>
-
       <div class="sample-ds-card">
-        <div class="sds-header" onclick="toggleDs(this)">
-          <div class="sds-em">🩸</div>
-          <div class="sds-name">Blood Sample</div>
-          <div class="sds-count">4 sources</div>
-          <div class="sds-toggle">▼</div>
-        </div>
+        <div class="sds-header" onclick="toggleDs(this)"><div class="sds-em">🩸</div><div class="sds-name">Blood Sample</div><div class="sds-count">4 sources</div><div class="sds-toggle">▼</div></div>
         <div class="sds-body">
-          <div class="ds-row"><div class="ds-dot"></div><div class="ds-info"><div class="ds-site">Kaggle — Blood Cell Count Dataset</div><div class="ds-url">kaggle.com/datasets/paultimothymooney/blood-cells</div><div class="ds-desc">12,500 labeled blood cell images — RBC, WBC, platelets. Perfect for blood analysis training.</div><div class="ds-tag">FREE · 12,500 IMAGES</div></div></div>
-          <div class="ds-row"><div class="ds-dot"></div><div class="ds-info"><div class="ds-site">Kaggle — Malaria Cell Images</div><div class="ds-url">kaggle.com/datasets/iarunava/cell-images-for-detecting-malaria</div><div class="ds-desc">27,558 labeled cell images — infected vs uninfected. Great for detecting blood parasites.</div><div class="ds-tag">FREE · 27K IMAGES</div></div></div>
-          <div class="ds-row"><div class="ds-dot"></div><div class="ds-info"><div class="ds-site">NIH — Sickle Cell Image Dataset</div><div class="ds-url">github.com/christianabbet/SickleQ</div><div class="ds-desc">Labeled sickle cell images for training anemia detection models.</div><div class="ds-tag">FREE · GITHUB</div></div></div>
-          <div class="ds-row"><div class="ds-dot"></div><div class="ds-info"><div class="ds-site">TCGA — Cancer Cell Images</div><div class="ds-url">portal.gdc.cancer.gov</div><div class="ds-desc">The Cancer Genome Atlas — thousands of pathology slide images, open access.</div><div class="ds-tag">FREE · OPEN ACCESS</div></div></div>
+          <div class="ds-row"><div class="ds-dot"></div><div class="ds-info"><div class="ds-site">Kaggle — Blood Cell Count Dataset</div><div class="ds-url">kaggle.com/datasets/paultimothymooney/blood-cells</div><div class="ds-desc">12,500 labeled blood cell images — RBC, WBC, platelets.</div><div class="ds-tag">FREE · 12,500 IMAGES</div></div></div>
+          <div class="ds-row"><div class="ds-dot"></div><div class="ds-info"><div class="ds-site">Kaggle — Malaria Cell Images</div><div class="ds-url">kaggle.com/datasets/iarunava/cell-images-for-detecting-malaria</div><div class="ds-desc">27,558 labeled cell images — infected vs uninfected.</div><div class="ds-tag">FREE · 27K IMAGES</div></div></div>
+          <div class="ds-row"><div class="ds-dot"></div><div class="ds-info"><div class="ds-site">NIH — Sickle Cell Dataset</div><div class="ds-url">github.com/christianabbet/SickleQ</div><div class="ds-desc">Labeled sickle cell images for training anemia models.</div><div class="ds-tag">FREE · GITHUB</div></div></div>
+          <div class="ds-row"><div class="ds-dot"></div><div class="ds-info"><div class="ds-site">TCGA — Cancer Cell Images</div><div class="ds-url">portal.gdc.cancer.gov</div><div class="ds-desc">The Cancer Genome Atlas — thousands of pathology slides.</div><div class="ds-tag">FREE · OPEN ACCESS</div></div></div>
         </div>
       </div>
-
-      <div class="sample-ds-card">
-        <div class="sds-header" onclick="toggleDs(this)">
-          <div class="sds-em">🦠</div>
-          <div class="sds-name">Virus Sample</div>
-          <div class="sds-count">3 sources</div>
-          <div class="sds-toggle">▼</div>
-        </div>
-        <div class="sds-body">
-          <div class="ds-row"><div class="ds-dot"></div><div class="ds-info"><div class="ds-site">NCBI Virus Image Database</div><div class="ds-url">ncbi.nlm.nih.gov/labs/virus</div><div class="ds-desc">Official virus microscopy images from CDC/NIH. Search by virus name and download.</div><div class="ds-tag">FREE · OFFICIAL</div></div></div>
-          <div class="ds-row"><div class="ds-dot"></div><div class="ds-info"><div class="ds-site">Kaggle — COVID-19 CT/X-ray Images</div><div class="ds-url">kaggle.com/datasets/tawsifurrahman/covid19-radiography-database</div><div class="ds-desc">21,165 labeled COVID/normal/viral pneumonia images for training virus-detection models.</div><div class="ds-tag">FREE · 21K IMAGES</div></div></div>
-          <div class="ds-row"><div class="ds-dot"></div><div class="ds-info"><div class="ds-site">VirusNet Open Dataset</div><div class="ds-url">virusnet.eu → Image database</div><div class="ds-desc">European virus image database — TEM microscopy images of various viral families.</div><div class="ds-tag">FREE · TEM IMAGES</div></div></div>
-        </div>
-      </div>
-
-      <div class="sample-ds-card">
-        <div class="sds-header" onclick="toggleDs(this)">
-          <div class="sds-em">🔬</div>
-          <div class="sds-name">Amoeba Sample</div>
-          <div class="sds-count">3 sources</div>
-          <div class="sds-toggle">▼</div>
-        </div>
-        <div class="sds-body">
-          <div class="ds-row"><div class="ds-dot"></div><div class="ds-info"><div class="ds-site">Roboflow — Protozoa Detection Dataset</div><div class="ds-url">universe.roboflow.com → search "amoeba protozoa"</div><div class="ds-desc">Labeled microscopy images of Entamoeba, Giardia, Acanthamoeba — already annotated.</div><div class="ds-tag">FREE DOWNLOAD</div></div></div>
-          <div class="ds-row"><div class="ds-dot"></div><div class="ds-info"><div class="ds-site">CDC DPDx — Parasite Image Library</div><div class="ds-url">cdc.gov/dpdx/az.html</div><div class="ds-desc">CDC's official parasite image library — Naegleria, Entamoeba, Giardia, all labeled. Excellent quality.</div><div class="ds-tag">FREE · CDC OFFICIAL</div></div></div>
-          <div class="ds-row"><div class="ds-dot"></div><div class="ds-info"><div class="ds-site">MicrobeLibrary (ASM)</div><div class="ds-url">asm.org/ASM/media/Protocol-Images</div><div class="ds-desc">American Society for Microbiology image library — protozoa, parasites, labeled micrographs.</div><div class="ds-tag">FREE · ASM</div></div></div>
-        </div>
-      </div>
-
-      <div class="sample-ds-card">
-        <div class="sds-header" onclick="toggleDs(this)">
-          <div class="sds-em">🍄</div>
-          <div class="sds-name">Fungus Sample</div>
-          <div class="sds-count">3 sources</div>
-          <div class="sds-toggle">▼</div>
-        </div>
-        <div class="sds-body">
-          <div class="ds-row"><div class="ds-dot"></div><div class="ds-info"><div class="ds-site">Kaggle — Fungal Disease Image Dataset</div><div class="ds-url">kaggle.com → search "fungal microscopy"</div><div class="ds-desc">Labeled Aspergillus, Candida, Cryptococcus microscopy images for model training.</div><div class="ds-tag">FREE DOWNLOAD</div></div></div>
-          <div class="ds-row"><div class="ds-dot"></div><div class="ds-info"><div class="ds-site">MycoBank Image Repository</div><div class="ds-url">mycobank.org</div><div class="ds-desc">International fungal nomenclature database with thousands of labeled microscopy images.</div><div class="ds-tag">FREE · OPEN</div></div></div>
-          <div class="ds-row"><div class="ds-dot"></div><div class="ds-info"><div class="ds-site">iNaturalist — Fungi Observations</div><div class="ds-url">inaturalist.org/taxa/47170-Fungi</div><div class="ds-desc">Millions of labeled fungal images from scientific observers worldwide. Filter by microscopy.</div><div class="ds-tag">FREE · CREATIVE COMMONS</div></div></div>
-        </div>
-      </div>
-
-      <div class="sample-ds-card">
-        <div class="sds-header" onclick="toggleDs(this)">
-          <div class="sds-em">⚗️</div>
-          <div class="sds-name">Bacteria Sample</div>
-          <div class="sds-count">4 sources</div>
-          <div class="sds-toggle">▼</div>
-        </div>
-        <div class="sds-body">
-          <div class="ds-row"><div class="ds-dot"></div><div class="ds-info"><div class="ds-site">Kaggle — DIBD Bacteria Dataset</div><div class="ds-url">kaggle.com/datasets/longnguyen2306/bacteria-identification-with-digitial-images</div><div class="ds-desc">15,000+ labeled bacteria microscopy images — gram staining, species labels, ideal for training.</div><div class="ds-tag">FREE · 15K IMAGES</div></div></div>
-          <div class="ds-row"><div class="ds-dot"></div><div class="ds-info"><div class="ds-site">Roboflow — Bacteria Detection</div><div class="ds-url">universe.roboflow.com → search "bacteria microscope"</div><div class="ds-desc">Pre-labeled datasets with bounding boxes — E. coli, Staph, Strep, TB bacillus images.</div><div class="ds-tag">FREE DOWNLOAD</div></div></div>
-          <div class="ds-row"><div class="ds-dot"></div><div class="ds-info"><div class="ds-site">MicrobeLibrary (ASM)</div><div class="ds-url">asm.org/ASM/media/Protocol-Images</div><div class="ds-desc">Thousands of Gram-stained and electron microscopy bacteria images with species labels.</div><div class="ds-tag">FREE · ASM</div></div></div>
-          <div class="ds-row"><div class="ds-dot"></div><div class="ds-info"><div class="ds-site">CDC Public Health Image Library</div><div class="ds-url">phil.cdc.gov</div><div class="ds-desc">CDC's official image library — thousands of labeled pathogen microscopy images, public domain.</div><div class="ds-tag">FREE · PUBLIC DOMAIN</div></div></div>
-        </div>
-      </div>
-
-      <div class="sample-ds-card">
-        <div class="sds-header" onclick="toggleDs(this)">
-          <div class="sds-em">🧬</div>
-          <div class="sds-name">Cancerous Cells</div>
-          <div class="sds-count">4 sources</div>
-          <div class="sds-toggle">▼</div>
-        </div>
-        <div class="sds-body">
-          <div class="ds-row"><div class="ds-dot"></div><div class="ds-info"><div class="ds-site">Kaggle — Breast Cancer Cell Images</div><div class="ds-url">kaggle.com/datasets/paultimothymooney/breast-histopathology-images</div><div class="ds-desc">277,524 labeled breast cancer cell images — benign vs malignant patches. Huge dataset.</div><div class="ds-tag">FREE · 277K IMAGES</div></div></div>
-          <div class="ds-row"><div class="ds-dot"></div><div class="ds-info"><div class="ds-site">TCGA Open Data Portal</div><div class="ds-url">portal.gdc.cancer.gov</div><div class="ds-desc">The Cancer Genome Atlas — pathology slide images for lung, colon, cervical, and more cancers.</div><div class="ds-tag">FREE · OPEN ACCESS</div></div></div>
-          <div class="ds-row"><div class="ds-dot"></div><div class="ds-info"><div class="ds-site">Kaggle — Leukemia Cell Dataset</div><div class="ds-url">kaggle.com/datasets/andrewmvd/leukemia-classification</div><div class="ds-desc">15,135 microscopy images of blood cells — normal vs leukemic blasts, labeled.</div><div class="ds-tag">FREE · 15K IMAGES</div></div></div>
-          <div class="ds-row"><div class="ds-dot"></div><div class="ds-info"><div class="ds-site">PathAI Open Datasets</div><div class="ds-url">pathai.com/resources</div><div class="ds-desc">Open pathology AI datasets — cancer cell images across multiple tissue types.</div><div class="ds-tag">FREE</div></div></div>
-        </div>
-      </div>
-
-      <div class="sample-ds-card">
-        <div class="sds-header" onclick="toggleDs(this)">
-          <div class="sds-em">🌿</div>
-          <div class="sds-name">Algae Sample</div>
-          <div class="sds-count">3 sources</div>
-          <div class="sds-toggle">▼</div>
-        </div>
-        <div class="sds-body">
-          <div class="ds-row"><div class="ds-dot"></div><div class="ds-info"><div class="ds-site">USGS Algae Image Library</div><div class="ds-url">nas.er.usgs.gov/taxgroup/algae</div><div class="ds-desc">Hundreds of labeled algae species microscopy images from US Geological Survey. Official and free.</div><div class="ds-tag">FREE · PUBLIC DOMAIN</div></div></div>
-          <div class="ds-row"><div class="ds-dot"></div><div class="ds-info"><div class="ds-site">AlgaeBase — Image Database</div><div class="ds-url">algaebase.org</div><div class="ds-desc">World's largest algae database with thousands of species images — many with microscopy photos.</div><div class="ds-tag">FREE BROWSE</div></div></div>
-          <div class="ds-row"><div class="ds-dot"></div><div class="ds-info"><div class="ds-site">Kaggle — Algae Classification</div><div class="ds-url">kaggle.com → search "algae classification microscopy"</div><div class="ds-desc">Labeled algae bloom and freshwater algae microscopy image datasets for ML training.</div><div class="ds-tag">FREE DOWNLOAD</div></div></div>
-        </div>
-      </div>
-
-      <!-- STEP 2 -->
       <div class="step-card">
         <div class="step-num">2</div>
         <div class="step-label">STEP 02</div>
-        <div class="step-title">Train on Google Teachable Machine (free, browser-based)</div>
-        <div class="step-body">
-          Go to teachablemachine.withgoogle.com → New Project → Image Project → Standard model.<br/><br/>
-          Create classes matching your sample type, e.g. for Water: "Algae", "Bacteria", "Chemical", "Safe".<br/><br/>
-          Upload your downloaded images into each class (60–100 per class). Click Train. Takes 5–15 min in your browser — no GPU, no cost.<br/><br/>
-          Export → TensorFlow.js → Upload (shareable link) → copy the URL.
-        </div>
+        <div class="step-title">Train on Google Teachable Machine</div>
+        <div class="step-body">Go to teachablemachine.withgoogle.com → New Project → Image Project → Standard model. Create classes, upload 60–100 images each, click Train. Export → TensorFlow.js → Upload → copy URL.</div>
         <a class="step-link" href="https://teachablemachine.withgoogle.com" target="_blank">teachablemachine.withgoogle.com →</a>
       </div>
-
-      <!-- STEP 3 — paste model URLs -->
       <div class="step-card">
         <div class="step-num">3</div>
         <div class="step-label">STEP 03</div>
         <div class="step-title">Paste your trained model URLs below</div>
-        <div class="step-body">After exporting from Teachable Machine, paste each model URL here. The app will use your real AI model instead of the simulation.</div>
+        <div class="step-body">After exporting from Teachable Machine, paste each model URL here. The app will use your real AI model instead of simulation.</div>
       </div>
-
       <div style="display:flex;flex-direction:column;gap:8px">
-        <!-- ── MODEL URL ROWS (fixed — use LOAD button, not oninput) ── -->
-        <div id="allModelRows"><!-- built by JS --></div>
+        <div id="allModelRows"></div>
       </div>
-
-    </div><!-- /scr-train -->
+    </div>
 
     <!-- ══ ABOUT SCREEN ══ -->
     <div class="screen" id="scr-about">
       <div class="about-hero">
         <div style="font-size:44px;margin-bottom:8px">🔬</div>
         <div class="ah-title">SA-Microlens AI</div>
-        <div class="ah-sub">SMART PATHOGEN DETECTION · v3.0</div>
+        <div class="ah-sub">SMART PATHOGEN DETECTION · v3.1</div>
         <div class="cost-chip">TOTAL COST: $0 · 100% FREE STACK</div>
       </div>
       <div class="ab-card">
-        <div class="ab-row"><div class="ab-ico">📷</div><div><div class="ab-title">3 Input Modes</div><div class="ab-desc">Live Camera feed from phone's back camera, Upload an image from your gallery, or Take a Photo with camera — all three feed into the same AI detection engine.</div></div></div>
-        <div class="ab-row"><div class="ab-ico">🤖</div><div><div class="ab-title">On-Device AI (TensorFlow.js)</div><div class="ab-desc">Your trained Teachable Machine model runs 100% in the browser — zero API cost per scan, works offline, no server needed.</div></div></div>
-        <div class="ab-row"><div class="ab-ico">✨</div><div><div class="ab-title">Gemini AI Deep Analysis</div><div class="ab-desc">Google Gemini 1.5 Flash gives clinical interpretation, danger level assessment, and immediate lab action plan in plain language.</div></div></div>
-        <div class="ab-row"><div class="ab-ico">🧪</div><div><div class="ab-title">8 Sample Types</div><div class="ab-desc">Water · Blood · Virus · Amoeba · Fungus · Bacteria · Cancerous Cells · Algae — each with its own AI model and organism database.</div></div></div>
-        <div class="ab-row"><div class="ab-ico">🏆</div><div><div class="ab-title">Google Solutions Hackathon</div><div class="ab-desc">Built with Gemini AI · TensorFlow.js · PWA · GitHub Pages · Teachable Machine · Firebase Spark. Zero cost. Replaces a multi-station lab.</div></div></div>
+        <div class="ab-row"><div class="ab-ico">📷</div><div><div class="ab-title">3 Input Modes</div><div class="ab-desc">Live Camera, Upload Image, or Take Photo — all feed into the AI detection engine.</div></div></div>
+        <div class="ab-row"><div class="ab-ico">🤖</div><div><div class="ab-title">On-Device AI (TensorFlow.js)</div><div class="ab-desc">Teachable Machine model runs 100% in browser — zero API cost, works offline.</div></div></div>
+        <div class="ab-row"><div class="ab-ico">✨</div><div><div class="ab-title">Gemini AI Deep Analysis</div><div class="ab-desc">Google Gemini 1.5 Flash gives clinical interpretation and lab action plan.</div></div></div>
+        <div class="ab-row"><div class="ab-ico">🧪</div><div><div class="ab-title">8 Sample Types</div><div class="ab-desc">Water · Blood · Virus · Amoeba · Fungus · Bacteria · Cancer · Algae</div></div></div>
+        <div class="ab-row"><div class="ab-ico">🏆</div><div><div class="ab-title">Google Solutions Hackathon</div><div class="ab-desc">Built with Gemini AI · TensorFlow.js · PWA · GitHub Pages · Teachable Machine. Zero cost.</div></div></div>
       </div>
     </div>
 
-  </div><!-- /mbody -->
+  </div>
 
   <!-- BOTTOM NAV -->
   <div class="bnav-bar">
@@ -629,12 +507,12 @@ html,body{height:100%;background:var(--bg);font-family:var(--fb);color:var(--t1)
     <button class="bnav" onclick="showScr('about',this)"><div class="bnav-ic">ℹ️</div><div class="bnav-lb">ABOUT</div></button>
   </div>
 
-</div><!-- /app -->
+</div>
 
 <script>
 /* ═══════════════════ CONFIG ═══════════════════ */
 let CFG_MODELS={water:'',blood:'https://teachablemachine.withgoogle.com/models/GTkNhS-Rel/',virus:'',amoeba:'',fungus:'',bacteria:'',cancerous:'',algae:''};
-try{const s=localStorage.getItem('sa_models');if(s)CFG_MODELS=JSON.parse(s);}catch(e){}
+try{const s=localStorage.getItem('sa_models');if(s)CFG_MODELS=Object.assign(CFG_MODELS,JSON.parse(s));}catch(e){}
 let CFG_GEMINI='';
 try{CFG_GEMINI=localStorage.getItem('sa_gemini_key')||'';}catch(e){}
 
@@ -649,12 +527,12 @@ const DB={
     {n:'Spirogyra filament',type:'ALGAE',d:'Spiral chloroplast alga · Freshwater · No pathogenic risk',t:'safe'},
   ]},
   blood:{hud:'BLOOD',station:'STA-B2',orgs:[
-       {n:'Leukemia Cell',type:'CANCER·BLOOD',d:'Acute leukaemia marker · Abnormal nuclear morphology · Urgent referral required',t:'critical'},
-       {n:'Cancer Cell',type:'CANCER',d:'Malignant cell detected · Abnormal mitosis · Multi-organ risk indicator',t:'critical'},
-       {n:'Sickle Cell',type:'RBC·GENETIC',d:'Haemoglobin S mutation · Crescent morphology · Vaso-occlusion risk',t:'high'},
-       {n:'WBC Normal',type:'WBC·NORMAL',d:'Healthy white blood cell · Round nucleus · Immune system functioning normally',t:'safe'},
-       {n:'Normal RBC',type:'RBC·NORMAL',d:'Healthy biconcave erythrocyte · No pathological features detected',t:'safe'},
-   ]},
+    {n:'Leukemia Cell',type:'CANCER·BLOOD',d:'Acute leukaemia marker · Abnormal nuclear morphology · Urgent referral required',t:'critical'},
+    {n:'Cancer Cell',type:'CANCER',d:'Malignant cell detected · Abnormal mitosis · Multi-organ risk indicator',t:'critical'},
+    {n:'Sickle Cell',type:'RBC·GENETIC',d:'Haemoglobin S mutation · Crescent morphology · Vaso-occlusion risk',t:'high'},
+    {n:'WBC Normal',type:'WBC·NORMAL',d:'Healthy white blood cell · Round nucleus · Immune system functioning normally',t:'safe'},
+    {n:'Normal RBC',type:'RBC·NORMAL',d:'Healthy biconcave erythrocyte · No pathological features detected',t:'safe'},
+  ]},
   virus:{hud:'VIRUS',station:'STA-V3',orgs:[
     {n:'SARS-CoV-2 (Omicron BA.5)',type:'CORONAVIRUS',d:'Betacoronavirus · Spike S614G mutation · Pandemic strain',t:'critical'},
     {n:'Influenza A H5N1',type:'ORTHOMYXOVIRUS',d:'Avian influenza · Haemagglutinin H5 · High pandemic potential',t:'critical'},
@@ -688,7 +566,7 @@ const DB={
     {n:'HeLa (cervical carcinoma)',type:'CERVICAL·CA',d:'Immortal cancer line · HPV-18 origin · Irregular mitosis',t:'critical'},
     {n:'A549 (lung carcinoma)',type:'LUNG·CA',d:'Non-small cell lung carcinoma · Epithelial adenocarcinoma',t:'critical'},
     {n:'MCF-7 (breast cancer)',type:'BREAST·CA',d:'ER+ adenocarcinoma · Actively proliferating · Stage II-III',t:'critical'},
-    {n:'Apoptotic cell body',type:'APOPTOSIS',d:'Programmed cell death · Membrane blebbing visible · Normal',t:'med'},
+    {n:'Apoptotic cell body',type:'APOPTOSIS',d:'Programmed cell death · Membrane blebbing visible',t:'med'},
     {n:'Normal lymphocyte',type:'WBC·NORMAL',d:'Healthy white blood cell · Round nucleus · No abnormalities',t:'safe'},
   ]},
   algae:{hud:'ALGAE',station:'STA-L1',orgs:[
@@ -703,15 +581,14 @@ const ICONS={water:'💧',blood:'🩸',virus:'🦠',amoeba:'🔬',fungus:'🍄',
 
 /* ═══════════════════ STATE ═══════════════════ */
 let cur='water',inputMode='camera',camOn=false,stream=null,scanning=false;
-let magCur='100x',loadedModel=null,lastResults=[];
-let scanSrc='camera'; // 'camera' | 'upload' | 'capture'
+let magCur='100x',loadedModel=null,lastResults=[],scanSrc='camera';
+const modelCache={};
 let history=[];
 try{history=JSON.parse(localStorage.getItem('sa_history_v3')||'[]');}catch(e){}
 
 /* ═══════════════════ CLOCK ═══════════════════ */
 setInterval(()=>{
-  const n=new Date();
-  const el=document.getElementById('hudTime');
+  const n=new Date(),el=document.getElementById('hudTime');
   if(el)el.textContent=String(n.getHours()).padStart(2,'0')+':'+String(n.getMinutes()).padStart(2,'0');
 },1000);
 
@@ -739,35 +616,25 @@ function setSample(el,key){
 /* ═══════════════════ INPUT MODE ═══════════════════ */
 function setMode(mode){
   inputMode=mode;
-  document.getElementById('modeCamera').classList.toggle('active',mode==='camera');
-  document.getElementById('modeUpload').classList.toggle('active',mode==='upload');
-  document.getElementById('modeCapture').classList.toggle('active',mode==='capture');
+  ['camera','upload','capture'].forEach(m=>{
+    document.getElementById('mode'+m.charAt(0).toUpperCase()+m.slice(1)).classList.toggle('active',m===mode);
+  });
   buildActionBar();
-
-  // If switching away from camera, stop it
-  if(mode!=='camera'&&camOn){stopCam();}
-
-  // Update placeholder
+  if(mode!=='camera'&&camOn)stopCam();
   const vp=document.getElementById('viewerPlaceholder');
   const vpIcon=document.getElementById('vpIcon');
   const vpTxt=document.getElementById('vpTxt');
   const img=document.getElementById('uploadedImg');
-
-  if(mode==='upload'){
-    if(!img.src||img.style.display==='none'){
-      vp.style.display='flex';vpIcon.textContent='🖼️';
-      vpTxt.textContent='Tap UPLOAD IMAGE to pick a microscopy photo from your phone gallery';
-    }
-  } else if(mode==='capture'){
-    if(!img.src||img.style.display==='none'){
-      vp.style.display='flex';vpIcon.textContent='📸';
-      vpTxt.textContent='Tap TAKE PHOTO to open your camera and photograph a slide';
-    }
-  } else {
-    if(!camOn){vp.style.display='flex';vpIcon.textContent='📷';vpTxt.textContent='Tap START CAM to see live microscope feed';}
+  const hasImg=img.src&&img.src!==window.location.href&&img.style.display!=='none';
+  if(!hasImg){
+    vp.style.display='flex';
+    if(mode==='upload'){vpIcon.textContent='🖼️';vpTxt.textContent='Tap UPLOAD to pick a microscopy photo from your gallery';}
+    else if(mode==='capture'){vpIcon.textContent='📸';vpTxt.textContent='Tap PHOTO to open your camera and photograph a slide';}
+    else if(!camOn){vpIcon.textContent='📷';vpTxt.textContent='Tap START CAM to see live feed';}
   }
 }
 
+/* ═══════════════════ ACTION BAR ═══════════════════ */
 function buildActionBar(){
   const bar=document.getElementById('actionBar');
   if(inputMode==='camera'){
@@ -780,21 +647,31 @@ function buildActionBar(){
       </button>`;
   } else if(inputMode==='upload'){
     bar.innerHTML=`
-      <button class="abtn abtn-up" onclick="document.getElementById('fileUpload').click()">
-        <span class="abtn-icon">🖼️</span>UPLOAD IMAGE
+      <button class="abtn abtn-up" onclick="triggerUpload()">
+        <span class="abtn-icon">🖼️</span>UPLOAD
       </button>
       <button class="abtn abtn-scan" id="btnScan" onclick="runScan()" disabled>
         ⬡ SCAN NOW
       </button>`;
   } else {
     bar.innerHTML=`
-      <button class="abtn abtn-snap" onclick="document.getElementById('fileCapture').click()">
+      <button class="abtn abtn-snap" onclick="triggerCapture()">
         <span class="abtn-icon">📸</span>TAKE PHOTO
       </button>
       <button class="abtn abtn-scan" id="btnScan" onclick="runScan()" disabled>
         ⬡ SCAN NOW
       </button>`;
   }
+}
+
+/* ── TRIGGER FILE INPUTS SAFELY FOR ANDROID APK ── */
+function triggerUpload(){
+  try{document.getElementById('fileUpload').click();}
+  catch(e){console.warn('Upload trigger failed:',e);}
+}
+function triggerCapture(){
+  try{document.getElementById('fileCapture').click();}
+  catch(e){console.warn('Capture trigger failed:',e);}
 }
 
 /* ═══════════════════ CAMERA ═══════════════════ */
@@ -804,16 +681,20 @@ async function toggleCam(){
   if(!btn)return;
   btn.textContent='STARTING...';btn.disabled=true;
   try{
-    stream=await navigator.mediaDevices.getUserMedia({
-      video:{facingMode:'environment',width:{ideal:1920},height:{ideal:1080}},audio:false
-    });
+    // Try environment camera first, fall back to any camera
+    let constraints={video:{facingMode:{ideal:'environment'},width:{ideal:1280},height:{ideal:720}},audio:false};
+    try{stream=await navigator.mediaDevices.getUserMedia(constraints);}
+    catch(e1){
+      // Fallback: any camera
+      stream=await navigator.mediaDevices.getUserMedia({video:true,audio:false});
+    }
     const v=document.getElementById('liveVideo');
     v.srcObject=stream;v.style.display='block';
     document.getElementById('uploadedImg').style.display='none';
     await v.play();
     document.getElementById('viewerPlaceholder').style.display='none';
     camOn=true;
-    btn.innerHTML='<span class="abtn-icon">⏹</span>STOP CAM';
+    btn.innerHTML='<span class="abtn-icon">⏹</span>STOP';
     btn.classList.add('stop');btn.disabled=false;
     document.getElementById('btnScan').disabled=false;
     document.getElementById('hudStatus').textContent='CAM ON';
@@ -822,18 +703,22 @@ async function toggleCam(){
     resizeCanvas();
   }catch(err){
     btn.innerHTML='<span class="abtn-icon">📷</span>START CAM';btn.disabled=false;
-    if(err.name==='NotAllowedError'){
-      alert('Camera permission denied.\nPlease allow camera access in your browser settings, then try again.');
+    if(err.name==='NotAllowedError'||err.name==='PermissionDeniedError'){
+      alert('Camera permission denied.\n\nPlease go to Settings > Apps > Chrome (or your browser) > Permissions > Camera and allow it, then try again.');
+    } else if(err.name==='NotFoundError'){
+      alert('No camera found on this device.');
     } else {
-      // Demo mode
-      camOn=true;btn.innerHTML='<span>DEMO MODE</span>';
+      // Demo mode fallback
+      camOn=true;btn.innerHTML='<span>DEMO</span>';
       document.getElementById('btnScan').disabled=false;
       document.getElementById('hudStatus').textContent='DEMO';
-      document.getElementById('viewerPlaceholder').querySelector('.vp-txt').textContent='Demo mode active — scanning with simulated AI';
+      const vpt=document.getElementById('viewerPlaceholder').querySelector('.vp-txt');
+      if(vpt)vpt.textContent='Demo mode — tap SCAN to simulate detection';
       scanSrc='camera';
     }
   }
 }
+
 function stopCam(){
   if(stream)stream.getTracks().forEach(t=>t.stop());
   stream=null;camOn=false;
@@ -841,7 +726,8 @@ function stopCam(){
   v.srcObject=null;v.style.display='none';
   const btn=document.getElementById('btnCam');
   if(btn){btn.innerHTML='<span class="abtn-icon">📷</span>START CAM';btn.classList.remove('stop');}
-  document.getElementById('btnScan').disabled=true;
+  const sb=document.getElementById('btnScan');
+  if(sb)sb.disabled=true;
   document.getElementById('hudStatus').textContent='STANDBY';
   document.getElementById('hudStatus').className='hp g';
   document.getElementById('viewerPlaceholder').style.display='flex';
@@ -852,25 +738,26 @@ function handleFileUpload(e){loadImageFile(e,'upload');}
 function handleFileCapture(e){loadImageFile(e,'capture');}
 
 function loadImageFile(e,src){
-  const file=e.target.files?.[0];
+  const file=e.target.files&&e.target.files[0];
   if(!file)return;
   const reader=new FileReader();
-  reader.onload=ev=>{
+  reader.onload=function(ev){
     const img=document.getElementById('uploadedImg');
     img.src=ev.target.result;
     img.style.display='block';
     document.getElementById('liveVideo').style.display='none';
     document.getElementById('viewerPlaceholder').style.display='none';
-    document.getElementById('btnScan').disabled=false;
+    const sb=document.getElementById('btnScan');
+    if(sb)sb.disabled=false;
     document.getElementById('hudStatus').textContent=src==='upload'?'IMAGE LOADED':'PHOTO TAKEN';
     document.getElementById('hudStatus').className='hp grn';
     scanSrc=src;
     clearCanvas();
-    // Show source badge
     showSrcBadge(src,file.name);
   };
+  reader.onerror=function(){alert('Could not read image file. Please try another image.');};
   reader.readAsDataURL(file);
-  e.target.value=''; // reset so same file can be re-selected
+  e.target.value='';
 }
 
 function showSrcBadge(src,name){
@@ -878,7 +765,7 @@ function showSrcBadge(src,name){
   const icon=src==='upload'?'🖼️':'📸';
   const label=src==='upload'?'UPLOADED IMAGE':'CAPTURED PHOTO';
   const fname=name?name.slice(0,28)+(name.length>28?'…':''):'';
-  wrap.innerHTML=`<div class="src-badge">${icon} ${label} · ${fname}</div>`;
+  wrap.innerHTML='<div class="src-badge">'+icon+' '+label+' · '+fname+'</div>';
 }
 
 /* ═══════════════════ MAGNIFICATION ═══════════════════ */
@@ -889,7 +776,7 @@ function setMag(el,mag){
   document.getElementById('hudMag').textContent=mag;
 }
 
-/* ═══════════════════ CANVAS RESIZE ═══════════════════ */
+/* ═══════════════════ CANVAS ═══════════════════ */
 function resizeCanvas(){
   const wrap=document.getElementById('viewer');
   const c=document.getElementById('detCanvas');
@@ -900,11 +787,15 @@ resizeCanvas();
 
 /* ═══════════════════ LOAD TF MODEL ═══════════════════ */
 async function loadModel(key){
-  // Check cache first — no need to reload if already in memory
-  if(modelCache[key]){loadedModel=modelCache[key];document.getElementById('hudStatus').textContent='MODEL OK';document.getElementById('hudStatus').className='hp grn';return;}
+  if(modelCache[key]){
+    loadedModel=modelCache[key];
+    document.getElementById('hudStatus').textContent='MODEL OK';
+    document.getElementById('hudStatus').className='hp grn';
+    return;
+  }
   const url=CFG_MODELS[key];
   if(!url)return;
-  if(typeof tmImage==='undefined'){console.warn('tmImage not loaded yet');return;}
+  if(typeof tmImage==='undefined'){console.warn('tmImage not loaded');return;}
   document.getElementById('hudStatus').textContent='LOADING AI...';
   document.getElementById('hudStatus').className='hp';
   try{
@@ -926,21 +817,19 @@ async function runScan(){
   scanning=true;
   const t0=Date.now();
   const btn=document.getElementById('btnScan');
-  btn.textContent='SCANNING...';btn.classList.add('scanning');
+  if(btn){btn.textContent='SCANNING...';btn.classList.add('scanning');}
   document.getElementById('sweep').classList.add('on');
   document.getElementById('hudStatus').textContent='SCANNING';
   document.getElementById('detList').innerHTML='';
   lastResults=[];
 
-  // Get source element for TF prediction
   let srcEl=null;
   if(inputMode==='camera'&&camOn&&stream){srcEl=document.getElementById('liveVideo');}
-  else if(inputMode!=='camera'){
+  else{
     const img=document.getElementById('uploadedImg');
-    if(img.src)srcEl=img;
+    if(img.src&&img.src!==window.location.href)srcEl=img;
   }
 
-  // Try real TF.js model
   let predictions=null;
   if(loadedModel&&srcEl){
     try{predictions=await loadedModel.predict(srcEl);}
@@ -949,20 +838,18 @@ async function runScan(){
 
   const pool=DB[cur].orgs;
   let picked;
-
   if(predictions&&predictions.length>0){
-    // Sort by probability descending — highest confidence class shown first
     const sorted=[...predictions].sort((a,b)=>b.probability-a.probability);
     picked=[];
     sorted.forEach((pred,idx)=>{
       if(idx<pool.length&&pred.probability>=0.05){
-        const org={...pool[idx]};
+        const org=Object.assign({},pool[idx]);
         org._aiClass=pred.className;
         org.conf=Math.round(pred.probability*100);
         picked.push(org);
       }
     });
-    if(!picked.length) picked=[{...pool[0],conf:Math.round(sorted[0].probability*100),_aiClass:sorted[0].className}];
+    if(!picked.length)picked=[Object.assign({},pool[0],{conf:Math.round(sorted[0].probability*100),_aiClass:sorted[0].className})];
   } else {
     const count=Math.min(pool.length,2+Math.floor(Math.random()*(pool.length-1)));
     picked=[...pool].sort(()=>Math.random()-0.5).slice(0,count);
@@ -972,14 +859,10 @@ async function runScan(){
   function nextDet(){
     if(i>=picked.length){finishScan(t0,picked);return;}
     const org=picked[i];
-    let conf;
-    if(predictions){
-      const match=predictions.find(p=>p.className&&(p.className.toLowerCase().includes(org.n.split(' ')[0].toLowerCase())||org.type.toLowerCase().includes(p.className.toLowerCase())));
-      conf=match?Math.round(match.probability*100):Math.round(72+Math.random()*25);
-    } else {
-      conf=Math.round(82+Math.random()*16);
-    }
-    lastResults.push({...org,conf});
+    const conf=predictions?
+      (predictions.find(p=>p.className&&p.className.toLowerCase().includes(org.n.split(' ')[0].toLowerCase()))||{probability:(72+Math.random()*25)/100}).probability*100|0
+      :Math.round(82+Math.random()*16);
+    lastResults.push(Object.assign({},org,{conf}));
     addCard(org,conf,i);
     document.getElementById('mDet').textContent=i+1;
     document.getElementById('hudCount').textContent=(i+1)+' DETECTED';
@@ -993,29 +876,26 @@ function finishScan(t0,results){
   scanning=false;
   const elapsed=Date.now()-t0;
   const btn=document.getElementById('btnScan');
-  btn.textContent='⬡ SCAN NOW';btn.classList.remove('scanning');
+  if(btn){btn.textContent='⬡ SCAN NOW';btn.classList.remove('scanning');}
   document.getElementById('sweep').classList.remove('on');
   document.getElementById('mMs').textContent=elapsed;
   document.getElementById('mConf').textContent=(loadedModel?'AI ':'SIM ')+'95%';
-
   const crit=results.filter(r=>r.t==='critical').length;
   const high=results.filter(r=>r.t==='high').length;
   const med=results.filter(r=>r.t==='med').length;
   const risk=Math.min(10,crit*3+high*2+med);
   const rEl=document.getElementById('mRisk');
   rEl.textContent=risk;rEl.className='mc-v'+(risk>=7?' r':risk>=4?' a':' g');
-
   if(crit>0)setThreat('high','CRITICAL — '+crit+' critical pathogen(s). Isolate sample immediately.');
   else if(high>0)setThreat('high','High risk — '+high+' dangerous organism(s). Supervisor required.');
   else if(med>0)setThreat('med','Caution — '+med+' moderate-risk organism(s). Further testing needed.');
   else setThreat('low','Low risk — No critical pathogens detected.');
-
   document.getElementById('hudStatus').textContent='DONE';
-
-  // Draw boxes
-  if(inputMode==='camera'&&camOn){drawBoxesOnLive(results);}
-  else{drawBoxesOnImage(results);}
-
+  resizeCanvas();
+  const c=document.getElementById('detCanvas');
+  const ctx=c.getContext('2d');
+  ctx.clearRect(0,0,c.width,c.height);
+  drawBoxGrid(ctx,results,c.width,c.height);
   if(risk>=6&&navigator.vibrate)navigator.vibrate([200,100,300]);
   saveHistory(results,risk,elapsed,scanSrc);
 }
@@ -1028,44 +908,20 @@ function addCard(org,conf,idx){
   const dc=document.createElement('div');
   dc.className='dc '+cls;
   dc.style.animationDelay=(idx*0.06)+'s';
-  const typeLabel=org._aiClass?`AI CLASS: ${org._aiClass}`:org.type;
-  dc.innerHTML=`
-    <div class="dc-top">
-      <div class="dc-name">${org.n}</div>
-      <div class="dc-badge ${cls}">${lbl}</div>
-    </div>
-    <div class="dc-type">${typeLabel}</div>
-    <div class="dc-desc">${org.d}</div>
-    <div class="dc-conf">
-      <div class="cbar"><div class="cfill ${cls}" style="width:0" data-w="${Math.round(conf)}%"></div></div>
-      <div class="cpct">${Math.round(conf)}% CONF</div>
-    </div>`;
+  const typeLabel=org._aiClass?('AI CLASS: '+org._aiClass):org.type;
+  dc.innerHTML='<div class="dc-top"><div class="dc-name">'+org.n+'</div><div class="dc-badge '+cls+'">'+lbl+'</div></div>'
+    +'<div class="dc-type">'+typeLabel+'</div>'
+    +'<div class="dc-desc">'+org.d+'</div>'
+    +'<div class="dc-conf"><div class="cbar"><div class="cfill '+cls+'" style="width:0" data-w="'+Math.round(conf)+'%"></div></div>'
+    +'<div class="cpct">'+Math.round(conf)+'% CONF</div></div>';
   list.appendChild(dc);
-  setTimeout(()=>{const f=dc.querySelector('.cfill');if(f)f.style.width=f.dataset.w;},60);
+  setTimeout(function(){const f=dc.querySelector('.cfill');if(f)f.style.width=f.dataset.w;},60);
   dc.scrollIntoView({behavior:'smooth',block:'nearest'});
 }
 
 /* ═══════════════════ CANVAS BOXES ═══════════════════ */
-function drawBoxesOnLive(results){
-  resizeCanvas();
-  const c=document.getElementById('detCanvas');
-  const ctx=c.getContext('2d');
-  const W=c.width,H=c.height;
-  ctx.clearRect(0,0,W,H);
-  drawBoxGrid(ctx,results,W,H);
-}
-
-function drawBoxesOnImage(results){
-  resizeCanvas();
-  const c=document.getElementById('detCanvas');
-  const ctx=c.getContext('2d');
-  const W=c.width,H=c.height;
-  ctx.clearRect(0,0,W,H);
-  drawBoxGrid(ctx,results,W,H);
-}
-
 function drawBoxGrid(ctx,results,W,H){
-  results.forEach((r,i)=>{
+  results.forEach(function(r,i){
     const cols=Math.min(3,results.length);
     const col=i%cols,row=Math.floor(i/cols);
     const cw=W/cols,ch=H/Math.ceil(results.length/cols);
@@ -1073,24 +929,19 @@ function drawBoxGrid(ctx,results,W,H){
     const bx=col*cw+(cw-bw)/2+(Math.random()-0.5)*10;
     const by=row*ch+(ch-bh)/2+(Math.random()-0.5)*8;
     const color=r.t==='critical'||r.t==='high'?'#ff3355':r.t==='med'?'#ffaa00':'#00ff88';
-
     ctx.strokeStyle=color+'bb';ctx.lineWidth=1.5;ctx.strokeRect(bx,by,bw,bh);
     const tl=10;ctx.lineWidth=2;ctx.strokeStyle=color;
-    [[bx,by,1,1],[bx+bw,by,-1,1],[bx,by+bh,1,-1],[bx+bw,by+bh,-1,-1]].forEach(([x,y,dx,dy])=>{
-      ctx.beginPath();ctx.moveTo(x+dx*tl,y);ctx.lineTo(x,y);ctx.lineTo(x,y+dy*tl);ctx.stroke();
+    [[bx,by,1,1],[bx+bw,by,-1,1],[bx,by+bh,1,-1],[bx+bw,by+bh,-1,-1]].forEach(function(a){
+      ctx.beginPath();ctx.moveTo(a[0]+a[2]*tl,a[1]);ctx.lineTo(a[0],a[1]);ctx.lineTo(a[0],a[1]+a[3]*tl);ctx.stroke();
     });
-
     const lbl=r.n.split(' ')[0].toUpperCase();
     ctx.font='bold 8px Orbitron,monospace';
     const tw=ctx.measureText(lbl).width;
     ctx.fillStyle='rgba(2,9,18,0.88)';ctx.fillRect(bx,by-16,tw+12,15);
     ctx.fillStyle=color;ctx.fillText(lbl,bx+6,by-4);
-
     const conf=Math.round(r.conf||82+Math.random()*17)+'%';
-    ctx.font='bold 8px Orbitron,monospace';
     ctx.fillStyle='rgba(2,9,18,0.88)';ctx.fillRect(bx,by+bh+1,36,13);
     ctx.fillStyle=color;ctx.fillText(conf,bx+3,by+bh+11);
-
     ctx.beginPath();ctx.arc(bx+bw/2,by+bh/2,3,0,Math.PI*2);
     ctx.fillStyle=color+'66';ctx.fill();
   });
@@ -1110,7 +961,7 @@ function setThreat(level,txt){
 
 function clearResults(){
   document.getElementById('detList').innerHTML='<div class="empty"><div class="empty-em">🔎</div><div class="empty-tx">Use Camera, Upload or Take Photo — then tap SCAN</div></div>';
-  ['mDet','mConf','mRisk','mMs'].forEach(id=>document.getElementById(id).textContent=id==='mDet'||id==='mRisk'?'0':'—');
+  ['mDet','mConf','mRisk','mMs'].forEach(function(id){document.getElementById(id).textContent=id==='mDet'||id==='mRisk'?'0':'—';});
   document.getElementById('hudCount').textContent='0 DETECTED';
   document.getElementById('srcBadgeWrap').innerHTML='';
   setThreat('low','Ready — select a mode and scan a sample');
@@ -1124,22 +975,20 @@ async function askGemini(){
   const key=document.getElementById('gemKey').value.trim()||CFG_GEMINI;
   const out=document.getElementById('gemOut');
   if(key){try{localStorage.setItem('sa_gemini_key',key);}catch(e){}}
-  if(!key){out.textContent='Paste your free Gemini API key above. Get it at aistudio.google.com/app/apikey';out.className='gem-out err';return;}
+  if(!key){out.textContent='Paste your free Gemini API key above.';out.className='gem-out err';return;}
   if(!lastResults.length){out.textContent='Run a scan first, then tap ANALYZE.';out.className='gem-out err';return;}
-
   out.textContent='ANALYZING WITH GEMINI AI...';out.className='gem-out loading';
-  const summary=lastResults.map(r=>`• ${r.n} [${r.t.toUpperCase()} RISK, ${Math.round(r.conf||90)}% confidence] — ${r.d}`).join('\n');
+  const summary=lastResults.map(function(r){return'* '+r.n+' ['+r.t.toUpperCase()+' RISK, '+Math.round(r.conf||90)+'% conf] — '+r.d;}).join('\n');
   const srcDesc=scanSrc==='upload'?'from an uploaded microscopy image':scanSrc==='capture'?'from a captured phone photo':'from a live camera feed';
-  const prompt=`You are a medical AI assistant in SA-Microlens AI, a smart microscope detection app.\n\nSample type: ${cur.toUpperCase()} (analysed ${srcDesc})\nDetected:\n${summary}\n\nProvide:\n1. Clinical interpretation (2-3 sentences)\n2. Most dangerous finding and immediate risk\n3. Immediate action for the lab technician\n4. Pandemic or public health implications if any\n\nBe concise, actionable, and plain text only — no bullet symbols or markdown headers.`;
-
+  const prompt='You are a medical AI assistant in SA-Microlens AI.\n\nSample: '+cur.toUpperCase()+' ('+srcDesc+')\nDetected:\n'+summary+'\n\nProvide:\n1. Clinical interpretation (2-3 sentences)\n2. Most dangerous finding and immediate risk\n3. Immediate action for the lab technician\n4. Public health implications if any\n\nBe concise, plain text only, no markdown.';
   try{
-    const res=await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${key}`,{
+    const res=await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key='+key,{
       method:'POST',headers:{'Content-Type':'application/json'},
       body:JSON.stringify({contents:[{parts:[{text:prompt}]}],generationConfig:{maxOutputTokens:420,temperature:0.25}})
     });
-    if(!res.ok){const e=await res.json();throw new Error(e.error?.message||'HTTP '+res.status);}
+    if(!res.ok){const e=await res.json();throw new Error(e.error&&e.error.message||'HTTP '+res.status);}
     const data=await res.json();
-    out.textContent=data.candidates?.[0]?.content?.parts?.[0]?.text||'No response.';
+    out.textContent=(data.candidates&&data.candidates[0]&&data.candidates[0].content&&data.candidates[0].content.parts&&data.candidates[0].content.parts[0]&&data.candidates[0].content.parts[0].text)||'No response.';
     out.className='gem-out';
   }catch(err){
     out.textContent='Gemini error: '+err.message;out.className='gem-out err';
@@ -1149,7 +998,7 @@ async function askGemini(){
 /* ═══════════════════ HISTORY ═══════════════════ */
 function saveHistory(results,risk,elapsed,src){
   try{
-    history.unshift({id:Date.now(),sample:cur,count:results.length,risk,elapsed,src,ts:new Date().toISOString(),names:results.map(r=>r.n),modelUsed:!!loadedModel});
+    history.unshift({id:Date.now(),sample:cur,count:results.length,risk,elapsed,src,ts:new Date().toISOString(),names:results.map(function(r){return r.n;}),modelUsed:!!loadedModel});
     if(history.length>80)history.pop();
     localStorage.setItem('sa_history_v3',JSON.stringify(history));
   }catch(e){}
@@ -1158,68 +1007,52 @@ function saveHistory(results,risk,elapsed,src){
 function renderHistory(){
   const el=document.getElementById('histList');
   if(!history.length){el.innerHTML='<div class="empty"><div class="empty-em">📋</div><div class="empty-tx">No scans yet.</div></div>';return;}
-  el.innerHTML=history.map(h=>{
+  el.innerHTML=history.map(function(h){
     const d=new Date(h.ts);
     const dt=d.toLocaleDateString()+' · '+d.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
     const rc=h.risk>=7?'var(--red)':h.risk>=4?'var(--amber)':'var(--green)';
     const srcIcon=h.src==='upload'?'🖼️':h.src==='capture'?'📸':'📷';
     const aiLabel=h.modelUsed?'AI MODEL':'SIMULATED';
-    return`<div class="hc">
-      <div class="hc-ico">${ICONS[h.sample]||'🔬'}</div>
-      <div class="hc-info">
-        <div class="hc-title">${h.sample.charAt(0).toUpperCase()+h.sample.slice(1)} — ${h.count} detected</div>
-        <div class="hc-meta">${dt} · ${h.elapsed}ms</div>
-        <div class="hc-src">${srcIcon} ${h.src?.toUpperCase()||'CAMERA'} · ${aiLabel}</div>
-        <div class="hc-meta" style="margin-top:2px;color:var(--t3)">${h.names.slice(0,2).join(' · ')}${h.names.length>2?' +more':''}</div>
-      </div>
-      <div class="hc-r" style="background:rgba(0,0,0,0.3);color:${rc};border:1px solid ${rc}40">Risk ${h.risk}/10</div>
-    </div>`;
+    return'<div class="hc"><div class="hc-ico">'+(ICONS[h.sample]||'🔬')+'</div>'
+      +'<div class="hc-info"><div class="hc-title">'+h.sample.charAt(0).toUpperCase()+h.sample.slice(1)+' — '+h.count+' detected</div>'
+      +'<div class="hc-meta">'+dt+' · '+h.elapsed+'ms</div>'
+      +'<div class="hc-src">'+srcIcon+' '+(h.src||'CAMERA').toUpperCase()+' · '+aiLabel+'</div>'
+      +'<div class="hc-meta" style="margin-top:2px;color:var(--t3)">'+h.names.slice(0,2).join(' · ')+(h.names.length>2?' +more':'')+'</div></div>'
+      +'<div class="hc-r" style="background:rgba(0,0,0,0.3);color:'+rc+';border:1px solid '+rc+'40">Risk '+h.risk+'/10</div></div>';
   }).join('');
 }
 
-/* ═══════════════════ TRAIN SCREEN — MODEL URLS ═══════════════════ */
-/* ═══════ MODEL CACHE — keeps loaded models in memory between tab switches ═══════ */
-const modelCache={};
-
-/* ═══════ SAMPLE META for Train tab ═══════ */
+/* ═══════════════════ TRAIN SCREEN ═══════════════════ */
 const SAMPLE_META={
-  water:{em:'💧',label:'Water',hint:'Class names you used in Teachable Machine must match exactly what you typed there. Common names: "Algae", "Bacteria", "Chemical", "Safe", "Microplastic"'},
-  blood:{em:'🩸',label:'Blood',hint:'Your 5 trained classes: "Normal RBC", "WBC Normal", "Sickle Cell", "Leukemia Cell", "Cancer Cell" — these must match EXACTLY what you named them in Teachable Machine.'},
-  virus:{em:'🦠',label:'Virus',hint:'Typical class names: "Coronavirus", "Influenza", "Ebola", "HIV", "Safe". Must match EXACTLY what you named them in Teachable Machine.'},
-  amoeba:{em:'🔬',label:'Amoeba',hint:'Typical class names: "Naegleria", "Entamoeba", "Acanthamoeba", "Giardia", "Safe". Must match EXACTLY.'},
-  fungus:{em:'🍄',label:'Fungus',hint:'Typical class names: "Aspergillus", "Candida", "Cryptococcus", "Safe". Must match EXACTLY.'},
-  bacteria:{em:'⚗️',label:'Bacteria',hint:'Typical class names: "TB Bacteria", "Staph", "E coli", "Safe". Must match EXACTLY.'},
-  cancerous:{em:'🧬',label:'Cancer',hint:'Typical class names: "Cancer Cell", "Leukemia", "Normal Cell". Must match EXACTLY.'},
-  algae:{em:'🌿',label:'Algae',hint:'Typical class names: "Toxic Algae", "Safe Algae", "Diatom". Must match EXACTLY.'},
+  water:{em:'💧',label:'Water',hint:'Common class names: "Algae", "Bacteria", "Chemical", "Safe", "Microplastic"'},
+  blood:{em:'🩸',label:'Blood',hint:'Your 5 trained classes: "Normal RBC", "WBC Normal", "Sickle Cell", "Leukemia Cell", "Cancer Cell"'},
+  virus:{em:'🦠',label:'Virus',hint:'Common class names: "Coronavirus", "Influenza", "Ebola", "HIV", "Safe"'},
+  amoeba:{em:'🔬',label:'Amoeba',hint:'Common class names: "Naegleria", "Entamoeba", "Acanthamoeba", "Giardia", "Safe"'},
+  fungus:{em:'🍄',label:'Fungus',hint:'Common class names: "Aspergillus", "Candida", "Cryptococcus", "Safe"'},
+  bacteria:{em:'⚗️',label:'Bacteria',hint:'Common class names: "TB Bacteria", "Staph", "E coli", "Safe"'},
+  cancerous:{em:'🧬',label:'Cancer',hint:'Common class names: "Cancer Cell", "Leukemia", "Normal Cell"'},
+  algae:{em:'🌿',label:'Algae',hint:'Common class names: "Toxic Algae", "Safe Algae", "Diatom"'},
 };
 
-/* ═══════ BUILD TRAIN TAB ROWS ═══════ */
 function buildModelRows(){
   const el=document.getElementById('allModelRows');
   if(!el)return;
-  el.innerHTML=Object.keys(SAMPLE_META).map(key=>{
+  el.innerHTML=Object.keys(SAMPLE_META).map(function(key){
     const m=SAMPLE_META[key];
     const saved=CFG_MODELS[key]||'';
-    return`<div class="model-url-row" id="mrow-${key}">
-      <div class="mu-label">
-        <span>${m.em} ${m.label.toUpperCase()} MODEL URL</span>
-        <span class="mu-status idle" id="mstatus-${key}">IDLE</span>
-      </div>
-      <div class="mu-input-row">
-        <input class="mu-input" id="mu-${key}" value="${saved}" placeholder="https://teachablemachine.withgoogle.com/models/XXXXX/"/>
-        <button class="mu-load-btn" onclick="loadAndTest('${key}')">LOAD &amp; TEST</button>
-      </div>
-      <div class="mu-class-hint" id="mhint-${key}" style="display:none">${m.hint}</div>
-      <div class="mu-err-msg" id="merr-${key}" style="display:none"></div>
-      <div class="mu-pred-box" id="mpred-${key}">
-        <div class="mu-pred-title">LIVE PREDICTIONS FROM YOUR MODEL</div>
-        <div id="mpred-rows-${key}"></div>
-      </div>
-    </div>`;
+    return'<div class="model-url-row" id="mrow-'+key+'">'
+      +'<div class="mu-label"><span>'+m.em+' '+m.label.toUpperCase()+' MODEL URL</span>'
+      +'<span class="mu-status idle" id="mstatus-'+key+'">IDLE</span></div>'
+      +'<div class="mu-input-row">'
+      +'<input class="mu-input" id="mu-'+key+'" value="'+saved+'" placeholder="https://teachablemachine.withgoogle.com/models/XXXXX/"/>'
+      +'<button class="mu-load-btn" onclick="loadAndTest(\''+key+'\')">LOAD &amp; TEST</button></div>'
+      +'<div class="mu-class-hint" id="mhint-'+key+'" style="display:none">'+m.hint+'</div>'
+      +'<div class="mu-err-msg" id="merr-'+key+'" style="display:none"></div>'
+      +'<div class="mu-pred-box" id="mpred-'+key+'"><div class="mu-pred-title">LIVE PREDICTIONS</div>'
+      +'<div id="mpred-rows-'+key+'"></div></div></div>';
   }).join('');
 }
 
-/* ═══════ LOAD + TEST a model ═══════ */
 async function loadAndTest(key){
   const inputEl=document.getElementById('mu-'+key);
   const statusEl=document.getElementById('mstatus-'+key);
@@ -1227,94 +1060,57 @@ async function loadAndTest(key){
   const predBox=document.getElementById('mpred-'+key);
   const hintEl=document.getElementById('mhint-'+key);
   const predRows=document.getElementById('mpred-rows-'+key);
-
   let url=(inputEl.value||'').trim();
   if(!url){errEl.textContent='Please paste your Teachable Machine model URL first.';errEl.style.display='block';return;}
-
-  // Fix 1: auto-add trailing slash
   if(!url.endsWith('/'))url+='/';
   inputEl.value=url;
-
-  // Save URL
   CFG_MODELS[key]=url;
   try{localStorage.setItem('sa_models',JSON.stringify(CFG_MODELS));}catch(e){}
-
-  // Clear old state
   errEl.style.display='none';predBox.classList.remove('show');hintEl.style.display='none';
   statusEl.className='mu-status loading';statusEl.textContent='LOADING...';
-
   if(typeof tmImage==='undefined'){
     statusEl.className='mu-status error';statusEl.textContent='ERROR';
-    errEl.textContent='TensorFlow.js library not loaded. Check your internet connection and reload the app.';
+    errEl.textContent='TensorFlow.js not loaded. Check internet connection.';
     errEl.style.display='block';return;
   }
-
   try{
     const model=await tmImage.load(url+'model.json',url+'metadata.json');
     modelCache[key]=model;
-    // If this is the current sample, also set as active model
     if(key===cur)loadedModel=model;
-
     statusEl.className='mu-status loaded';statusEl.textContent='LOADED ✓';
-
-    // Test prediction with a blank canvas to show class names
     const testCanvas=document.createElement('canvas');
     testCanvas.width=224;testCanvas.height=224;
     const preds=await model.predict(testCanvas);
-
-    // Show raw predictions
     predBox.classList.add('show');
-    predRows.innerHTML=preds.map(p=>{
+    predRows.innerHTML=preds.map(function(p){
       const pct=Math.round(p.probability*100);
-      return`<div class="mu-pred-row">
-        <div class="mu-pred-name">${p.className}</div>
-        <div class="mu-pred-bar"><div class="mu-pred-fill" style="width:${pct}%"></div></div>
-        <div class="mu-pred-pct">${pct}%</div>
-      </div>`;
+      return'<div class="mu-pred-row"><div class="mu-pred-name">'+p.className+'</div>'
+        +'<div class="mu-pred-bar"><div class="mu-pred-fill" style="width:'+pct+'%"></div></div>'
+        +'<div class="mu-pred-pct">'+pct+'%</div></div>';
     }).join('');
-
-    hintEl.style.display='block';
-    errEl.style.display='none';
-
-    // Update nav status
-    if(key===cur){
-      document.getElementById('hudStatus').textContent='MODEL OK';
-      document.getElementById('hudStatus').className='hp grn';
-    }
-
+    hintEl.style.display='block';errEl.style.display='none';
+    if(key===cur){document.getElementById('hudStatus').textContent='MODEL OK';document.getElementById('hudStatus').className='hp grn';}
   }catch(e){
     statusEl.className='mu-status error';statusEl.textContent='ERROR';
     let msg=e.message||String(e);
-    if(msg.includes('404')||msg.includes('not found')){
-      msg='Model files not found. Make sure you clicked "Upload" in Teachable Machine (not just Export). The URL must end with a slash: /models/XXXXX/';
-    } else if(msg.includes('CORS')||msg.includes('fetch')){
-      msg='Network error loading model. Make sure your Teachable Machine model is set to PUBLIC (not private) when you upload it.';
-    } else if(msg.includes('JSON')){
-      msg='Could not read model.json. The URL may be wrong or the model upload failed. Try re-uploading in Teachable Machine.';
-    }
+    if(msg.includes('404')||msg.includes('not found'))msg='Model files not found. Click "Upload" in Teachable Machine (not just Export). URL must end with /';
+    else if(msg.includes('CORS')||msg.includes('fetch'))msg='Network error. Make sure model is set to PUBLIC in Teachable Machine.';
+    else if(msg.includes('JSON'))msg='Could not read model.json. URL may be wrong or upload failed. Try re-uploading.';
     errEl.textContent='Error: '+msg;errEl.style.display='block';
     modelCache[key]=null;
     if(key===cur)loadedModel=null;
   }
 }
 
-/* ═══════ FIXED loadSavedModelUrls — also restore modelCache ═══════ */
 function loadSavedModelUrls(){
   buildModelRows();
-  // Update status badges for already-loaded models
-  Object.keys(CFG_MODELS).forEach(key=>{
+  Object.keys(CFG_MODELS).forEach(function(key){
     const statusEl=document.getElementById('mstatus-'+key);
     if(statusEl){
       if(modelCache[key]){statusEl.className='mu-status loaded';statusEl.textContent='LOADED ✓';}
       else if(CFG_MODELS[key]){statusEl.className='mu-status idle';statusEl.textContent='URL SAVED';}
     }
   });
-}
-
-/* ═══════ FIXED saveModelUrl — removed oninput, now only called by LOAD button ═══════ */
-function saveModelUrl(key,url){
-  CFG_MODELS[key]=url.trim();
-  try{localStorage.setItem('sa_models',JSON.stringify(CFG_MODELS));}catch(e){}
 }
 
 /* ═══════════════════ DATASET TOGGLES ═══════════════════ */
@@ -1328,12 +1124,12 @@ function toggleDs(header){
 /* ═══════════════════ INIT ═══════════════════ */
 buildActionBar();
 setMode('camera');
-// Build model rows in train tab immediately
 buildModelRows();
-// Auto-load any saved model for current sample
 if(CFG_MODELS[cur])loadModel(cur);
-if('serviceWorker'in navigator){
-  window.addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}));
+if('serviceWorker' in navigator){
+  window.addEventListener('load',function(){
+    navigator.serviceWorker.register('sw.js').catch(function(){});
+  });
 }
 </script>
 </body>
